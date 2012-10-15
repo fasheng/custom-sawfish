@@ -3,3 +3,5 @@
 *.jlc
 */*.jlc
 custom
+sessions
+uptimes
