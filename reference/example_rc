@@ -1,0 +1,563 @@
+;; -*- sawfish -*-
+
+;; fancy customized edge-actions
+(defvar-setq edge-flip-delay 250)
+(defvar-setq hot-spot-delay 125)
+
+(defvar-setq top-left-corner-function
+  (lambda () (jump-or-exec "Iceweasel" "iceweasel" #:match-class t)))
+
+(defvar-setq top-right-corner-function
+  (lambda () (pager-unhide)))
+
+(defvar-setq  bottom-right-corner-function
+  (lambda () (system "amarok &")))
+
+(defvar-setq bottom-left-corner-function
+  (lambda () (jump-or-exec "VirtualBox" "VirtualBox" #:match-class t)))
+
+(defvar-setq top-edge-function
+  (lambda () (jump-or-exec "Konsole" "konsole" #:match-class t)))
+
+(defvar-setq bottom-edge-function
+  (lambda () (raise-window (get-window-by-role "panel_" #:regex t))))
+
+;; actions when pointer hits edge
+(defvar-setq left-right-edge-action 'flip-viewport)
+(defvar-setq top-bottom-edge-action 'hot-spot)
+
+;; actions while moving window hits edge
+(defvar-setq left-right-edge-move-action 'flip-workspace)
+(defvar-setq top-bottom-edge-move-action 'none)
+
+;; Quite streamlined compared to th original one :)
+
+;; Regards,
+;; Chris
+
+;; P.S.: FYI you'll find my .sawfishrc attached.
+;;
+;; Sawfish Resource File
+;;
+;; Revision: 50 (2010-12-09)
+;;
+;; Sawfish: 1.8.0 :: rep-GTK 0.90.6 :: rep 0.91.1 :: SawfishPager: 0.90.1
+;;
+;; Christopher Roy Bratusek <zanghar freenet de>
+;;
+
+;; Load Modules
+
+(require 'sawfish.wm.commands.launcher)
+(require 'sawfish.wm.state.maximize)
+(require 'sawfish.wm.ext.match-window)
+(require 'sawfish.wm.ext.window-history)
+(require 'sawfish.wm.ext.shade-hover)
+(require 'sawfish.wm.util.prompt)
+(require 'sawfish.wm.util.selection)
+(require 'sawfish.wm.custom)
+(require 'sawfish.wm.tabs.tab)
+(require 'sawfish.wm.frames)
+(require 'sawfish.wm.ext.auto-raise)
+(require 'sawfish.wm.ext.audio-events)
+(require 'sawfish.wm.util.play-audio)
+(require 'sawfish.wm.commands.jump-or-exec)
+(require 'sawfish.wm.ext.pager)
+(require 'sawfish.wm.commands.x-cycle)
+(require 'sawfish.wm.ext.workspace-grid)
+(require 'sawfish.wm.viewport)
+(require 'rep.io.timers)
+(require 'sawfish.wm.menus)
+
+;; display-message-with-timeout
+
+(define (display-message-with-timeout message timeout)
+  (display-message message)
+  (make-timer (lambda () (display-message nil)) timeout))
+
+;; view-clipboard
+
+(defcustom clipboard-preview-clip-length 600
+  "Maximum length of Clipboard Preview"
+  :type number
+  :group misc)
+
+(defcustom clipboard-preview-timeout 15
+  "How long to display Clipboard Preview"
+  :type number
+  :group misc)
+
+(define (view-clipboard)
+  "Show the contents of the clipboard in a message window"
+  (let ((c (x-get-selection 'PRIMARY)))
+    (if (> (length c) 0)
+        (if (< (length c) clipboard-preview-clip-length)
+            (display-message-with-timeout c clipboard-preview-timeout)
+          (display-message-with-timeout
+           (format nil "%s ..." (substring c 0 clipboard-preview-clip-length))
+           clipboard-preview-timeout)))))
+
+;; display-ws-name
+
+(defcustom display-ws-name-on-switch nil
+  "Whether to display workspace name upon switch"
+  :type boolean
+  :group workspace
+  :after-set (lambda () (display-ws-name-setter)))
+
+(defcustom display-ws-name-timeout 2
+  "How long to display workspace name"
+  :type number
+  :group workspace)
+
+(define (display-workspace-name)
+  (display-message-with-timeout
+   (format nil "Now on Workspace: %s"
+           (or (nth current-workspace workspace-names)
+               (format nil (_ "Workspace %d") (1+ current-workspace))))
+   display-ws-name-timeout))
+
+(define (display-ws-name-setter)
+  (if (eq display-ws-name-on-switch 't)
+      (add-hook 'enter-workspace-hook display-workspace-name)
+    (remove-hook 'enter-workspace-hook display-workspace-name)))
+
+(define-command 'display-workspace-name display-workspace-name #:class 'default)
+
+(define (change-wallpaper)
+  (system "/home/chris/.sawfish/randombg &"))
+
+(define-command 'change-wallpaper change-wallpaper #:class 'default)
+
+;; (add-hook 'enter-workspace-hook change-wallpaper)
+
+;; Window Matchers
+
+(add-window-matcher '((WM_CLASS . "^Sawfishpager/sawfishpager$"))
+                     '((position . north-east)
+                        (fixed-positon . t)
+                        (never-maximize . t)
+                        (never-iconify . t)
+                        (frame-type . none)
+                        (cycle-skip . t)
+                        (window-list-skip . t)
+                        (sticky . t)
+                        (sticky-viewport . t)
+                        (avoid . ())))
+
+(add-window-matcher '((WM_WINDOW_ROLE . "panel_"))
+                     '((avoid . ())))
+
+(add-window-matcher '((WM_CLASS . "^Dolphin/dolphin$"))
+                     '((frame-type . none)
+                        (never-delete . t)
+                        (position . south)
+                        (no-history . t)
+                        (avoid . t)
+                        (cycle-skip . t)))
+
+(add-window-matcher '((WM_CLASS . "^Konsole/konsole$"))
+                     '((frame-type . none)
+                        (never-delete . t)
+                        (place-mode . none)
+                        (position . north)
+                        (depth . 2)
+                        (no-history . t)
+                        (cycle-skip . t)
+                        (iconify-on-leave . t)
+                        (keymap-trans . (("C-n" "C-S-t")))))
+
+;; iconify-all-windows
+
+(define (iconify-all-windows)
+  (map-windows iconify-window))
+
+(define-command 'iconify-all-windows iconify-all-windows)
+
+;; close-all-windows
+
+(define (close-all-windows)
+  (map-windows delete-window))
+
+(define-command 'close-all-windows close-all-windows)
+
+;; get-frame-width
+
+(define (get-frame-width w)
+  (let ((dims (window-dimensions w))
+        (frame (window-frame-dimensions w)))
+    (- (car frame) (car dims))))
+
+;; get-frame-height
+(define (get-frame-height w)
+  (let ((dims (window-dimensions w))
+        (frame (window-frame-dimensions w)))
+    (- (cdr frame) (cdr dims))))
+
+;; resize-window-half-screen-width
+(define (resize-window-half-screen-width w)
+  (let ((height (cdr (window-dimensions w)))
+        (half-width (/ (screen-width) 2))
+        (frame-width (get-frame-width w)))
+    (resize-window-with-hints* w (- half-width frame-width) frame-width)))
+
+(define-command 'resize-window-half-screen-width resize-window-half-screen-width #:spec "%W")
+
+;; resize-window-half-screen-height
+(define (resize-window-half-screen-height w)
+  (let ((width (car (window-dimensions w)))
+        (half-height (/ (screen-height) 2))
+        (frame-height (get-frame-height w)))
+    (resize-window-with-hints* w width (- half-height frame-height))))
+
+(define-command 'resize-window-half-screen-height resize-window-half-screen-height #:spec "%W")
+
+;; Global Keybindings
+
+(bind-keys global-keymap
+            "F1"      '(system "true &")
+            "W-F3"    '(system "sawfish-config &")
+            "C-W-e"   'display-errors
+            "C-W-n"   'restart
+            "C-W-q"   'quit
+            "C-W-a"   'view-clipboard
+            "W-TAB"   'cycle-windows
+            "C-TAB"   'cycle-windows-backwards
+            "C-W-t"   '(system "eject -T /dev/scd0 &")
+            "W-Menu"  'popup-window-menu
+            "C-Menu"  'popup-root-menu
+            "S-Menu"  'popup-apps-menu
+            "C-W-x"   '(system "xkill &")
+            "C-S-w"   'change-wallpaper
+            "C-W-d"   'show-desktop
+            "C-S-d"   'hide-desktop
+            "C-S-i"   'iconify-all-windows
+            "C-S-q"   'close-all-windows
+            "S-Print"   '(system "import -border window.png")
+            "C-Print" '(system "import -window root root.png")
+            "W-F6"    `(jump-or-exec "Geeqie" "geeqie")
+            "W-F7"    `(jump-or-exec "Iceweasel" "iceweasel" #:match-class t)
+            "W-F8"    `(jump-or-exec "Amarok" "amarok" #:match-class t)
+            "W-F9"    `(jump-or-exec "Synaptic" "kdesudo synaptic")
+            "W-F10"   `(jump-or-exec "KDevelop.bin" "kdevelop" #:match-class t)
+            "W-F11"   `(jump-or-exec "Glade-3" "glade-3" #:match-class t)
+            "Home"    `(toggle-or-exec "Dolphin" "dolphin ~")
+            "F12"     `(toggle-or-exec "Konsole" "konsole" #:match-class t)
+            "C-S-DEL" '(system "ksysguard"))
+
+;; Window Keybindings
+
+(unbind-keys window-keymap "Button1-Click")
+
+;; Rootwindow Keybindings
+
+(bind-keys root-window-keymap "Button2-Click" 'popup-window-list-menu
+            "Button3-Click" 'popup-root-menu)
+
+;; Application Keymacros
+
+(define apps-keymap (make-keymap))
+(bind-keys global-keymap "W-e" apps-keymap)
+
+(bind-keys apps-keymap
+            "c" `(jump-or-exec "Kmail" "kmail" #:match-class t)
+            "m" `(jump-or-exec "Smplayer" "smplayer" #:match-class t)
+            "a" `(jump-or-exec "Avidemux" "avidemux")
+            "n" `(jump-or-exec "NNTPGrab" "nntpgrab_gui")
+            "e" `(jump-or-exec "Google Earth" "googleearth")
+            "x" `(jump-or-exec "XChat-GNOME" "xchat-gnome")
+            "t" `(jump-or-exec "Flush" "flush" #:match-class t)
+            "w" '(system "tmw &")
+            "s" `(jump-or-exec "Xsane" "xsane" #:match-class t)
+            "g" `(jump-or-exec "GNU Image" "gimp" )
+            "v" `(jump-or-exec "VirtualBox" "VirtualBox")
+            "p" `(jump-or-exec "Poedit" "poedit"))
+
+;; Workspace Keymacros
+
+(define ws-keymap (make-keymap))
+(bind-keys global-keymap "W-w" ws-keymap)
+
+(bind-keys ws-keymap
+            "Left" workspace-left
+            "Up" workspace-up
+            "Right" workspace-right
+            "Down" workspace-down)
+
+;; Viewport keymacros
+
+(define vp-keymap (make-keymap))
+(bind-keys global-keymap "W-v" vp-keymap)
+
+(bind-keys vp-keymap
+            "Left" '(move-viewport -1 0)
+            "Up" '(move-viewport 0 -1)
+            "Right" '(move-viewport 1 0)
+            "Down" '(move-viewport 0 1))
+
+;; Window Keybindings
+
+(bind-keys window-keymap
+            "W-F4" 'delete-window-safely
+            "W-F5" 'destroy-window
+            "C-W-m" 'maximize-window
+            "C-W-w" 'unmaximize-window
+            "C-W-s" 'shade-window
+            "C-W-u" 'unshade-window
+            "C-W-i" 'iconify-window
+            "C-W-r" 'raise-window
+            "C-W-l" 'lower-window
+            "C-W-R" 'raise-window-depth
+            "C-W-L" 'lower-window-depth
+            "C-W-f" 'maximize-window-fullscreen
+            "C-W-v" 'maximize-window-vertically
+            "C-W-h" 'maximize-window-horizontally
+            "C-W-y" 'move-window-interactively
+            "C-W-x" 'resize-window-interactively
+            "C-S-r" 'rename-window
+            "C-S-c" 'move-window-center
+            "C-S-h" 'halve-window-size
+            "C-S-d" 'double-window-size
+            "C-S-e" 'resize-window-half-screen-height
+            "C-S-w" 'resize-window-half-screen-width)
+
+;;; Window Snooping
+
+(defvar window-snooper-timeout 15)
+
+(define (window-snooper)
+  "Display information about the focused window."
+  (let* ((w (input-focus))
+         (net-wm-name (get-x-text-property w '_NET_WM_NAME))
+         (wm-class (get-x-text-property w 'WM_CLASS))
+         (net-wm-icon-name (get-x-text-property w '_NET_WM_ICON_NAME))
+         (wm-window-role (get-x-text-property w 'WM_WINDOW_ROLE))
+         (wm-locale-name (get-x-text-property w 'WM_LOCALE_NAME))
+         (pos (window-position w))
+         (dims (window-dimensions w))
+         (frame-dims (window-frame-dimensions w))
+         (window-x (car pos))
+         (window-y (cdr pos))
+         (window-width (car dims))
+         (window-height (cdr dims))
+         (frame-width (- (car frame-dims) window-width))
+         (frame-height (- (cdr frame-dims) window-height)))
+
+    (display-message-with-timeout
+     (format nil
+             "
+About the currently focused window:
+===================================
+
+_NET_WM_NAME: \t\t %s
+WM_CLASS: \t\t\t %s
+_NET_WM_ICON_NAME: \t %s
+WM_WINDOW_ROLE: \t %s
+WM_LOCALE_NAME: \t %s
+Window X: \t\t\t %s pixels
+Window Y: \t\t\t %s pixels
+Window Width: \t\t %s pixels
+Window Height: \t\t %s pixels
+Frame Width: \t\t\t %s pixels
+Frame Height: \t\t %s pixels
+
+===================================\n"
+             (if net-wm-name
+                 (aref net-wm-name 0)
+               "")
+             (concat (aref wm-class 1)
+                     "/"
+                     (aref wm-class 0))
+             (if net-wm-icon-name
+                 (aref net-wm-icon-name 0)
+               "")
+             (if wm-window-role
+                 (aref wm-window-role 0)
+               "")
+             (if wm-locale-name
+                 (aref wm-locale-name 0)
+               "")
+             window-x
+             window-y
+             window-width
+             window-height
+             frame-width
+             frame-height) window-snooper-timeout)))
+
+(define-command 'window-snooper window-snooper)
+
+(bind-keys global-keymap
+           "C-S-s" 'window-snooper)
+
+;;; Configuration
+
+;; fancy customized edge-actions
+(defvar-setq edge-flip-delay 250)
+(defvar-setq hot-spot-delay 125)
+
+(defvar-setq top-left-corner-function
+  (lambda () (jump-or-exec "Iceweasel" "iceweasel" #:match-class t)))
+
+(defvar-setq top-right-corner-function
+  (lambda () (pager-unhide)))
+
+(defvar-setq  bottom-right-corner-function
+  (lambda () (system "amarok &")))
+
+(defvar-setq bottom-left-corner-function
+  (lambda () (jump-or-exec "VirtualBox" "VirtualBox" #:match-class t)))
+
+(defvar-setq top-edge-function
+  (lambda () (jump-or-exec "Konsole" "konsole" #:match-class t)))
+
+(defvar-setq bottom-edge-function
+  (lambda () (raise-window (get-window-by-role "panel_" #:regex t))))
+
+;; actions when pointer hits edge
+(defvar-setq left-right-edge-action 'flip-viewport)
+(defvar-setq top-bottom-edge-action 'hot-spot)
+
+;; actions while moving window hits edge
+(defvar-setq left-right-edge-move-action 'flip-workspace)
+(defvar-setq top-bottom-edge-move-action 'none)
+
+;; Sawfish Pager
+
+(defvar-setq pager-shrink-factor 24)
+(defvar-setq pager-warp-cursor t)
+(defvar-setq pager-hatch-windows nil)
+(defvar-setq pager-tooltips-enabled nil)
+(defvar-setq pager-X-current-viewport t)
+(defvar-setq pager-workspaces-per-column 2)
+(defvar-setq pager-output-stream t)
+(defvar-setq pager-select-type 'workspace)
+(defvar-setq pager-autohide-enable t)
+(defvar-setq pager-unhide-when-flip t)
+(add-hook 'after-initialization-hook pager t)
+
+;; Animation [Yep, Sawfish Maintainers also are Human Beeings]
+
+(defvar-setq default-window-animator 'wireframe)
+(defvar-setq anim-outline-icon-coords '(0 . 0))
+(defvar-setq anim-outline-steps 45)
+(defvar-setq anim-outline-delay 15)
+(defvar-setq move-outline-mode 'cross)
+(defvar-setq resize-outline-mode 'elliptical)
+
+;; Look'n'Feel
+
+(defvar-setq default-frame-style 'DarkTab)
+                                        ;(defvar-setq decorate-transients t)
+(defvar-setq use-custom-font-color nil)
+(defvar-setq frame-font-active-color "white")
+(defvar-setq frame-font-inactive-color "grey85")
+
+;; Cycling
+
+(defvar-setq cycle-all-workspaces t)
+(defvar-setq cycle-all-viewports t)
+(defvar-setq cycle-raise-windows nil)
+
+;; Display Workspace Name
+
+(defvar-setq display-ws-name-on-switch t)
+(defvar-setq display-ws-name-timeout 3)
+
+(display-ws-name-setter)
+
+;; Focus
+
+(defvar-setq focus-mode 'enter-exit)
+(defvar-setq ignore-window-input-hint nil)
+(defvar-setq focus-windows-when-mapped nil)
+(defvar-setq tab-raise-on-hover t)
+
+(raise-tabs-on-hover-setter)
+
+;; Workspaces
+
+(defvar-setq workspace-names '("Master" "Slave" "Playground" "Misc") )
+(defvar-setq workspace-boundary-mode 'wrap-around)
+
+;; Viewports
+
+(defvar-setq viewport-dimensions '(1 . 1))
+(defvar-setq viewport-minimum-dimensions '(1 . 1))
+(defvar-setq uniconify-to-current-viewport t)
+(defvar-setq viewport-boundary-mode 'dynamic)
+(defvar-setq scroll-viewport-steps 45)
+
+;; Edge Flip
+
+(defvar-setq edge-flip-enabled nil)
+(defvar-setq edge-flip-type 'viewport)
+(defvar-setq edge-flip-only-when-moving nil)
+(defvar-setq edge-flip-delay 350)
+
+                                        ;(edge-flip-enable)
+;; Error Handler
+
+(defvar-setq error-handler-beep nil)
+(defvar-setq error-destination 'both)
+
+;; Placement
+
+(defvar-setq place-window-mode 'interactively)
+(defvar-setq place-transient-mode 'centered-on-parent)
+
+;; Hot-Spot
+(defvar-setq hot-spots-enable t)
+(defvar-setq hot-spot-delay 150)
+(defvar-setq hot-spots-area 50)
+
+;; Move & Resize
+
+(defvar-setq move-snap-mode 'magnetism)
+(defvar-setq move-resize-inhibit-configure t)
+(defvar-setq move-resize-raise-window t)
+(defvar-setq move-show-position t)
+(defvar-setq resize-show-dimensions t)
+
+;; Audio Events
+
+(defvar-setq play-sample-program "/usr/bin/paplay")
+(defvar-setq audio-events-enabled nil)
+
+;; Window History
+
+(defvar-setq window-history-auto-save-position t)
+(defvar-setq window-history-auto-save-dimensions t)
+(defvar-setq window-history-auto-save-state t)
+(defvar-setq window-history-ignore-transients nil)
+
+;; Shade-Hover
+
+(defvar-setq shade-hover-mode t)
+(defvar-setq shade-hover-delay 150)
+
+;; Cursor Warping
+
+(defvar-setq warp-to-window-offset (cons 50 50))
+(defvar-setq warp-to-window-enabled t)
+
+;; XTerm & Browser
+
+(defvar-setq xterm-program "konsole")
+(defvar-setq browser-program "iceweasel")
+
+;; Apps-Menu
+
+(defvar-setq apps-menu-show-all 'maybe)
+(defvar-setq apps-menu-alphabetize t)
+
+;; Grow/Pack/Shrink/Yank
+
+(defvar-setq grow-is-maximize nil)
+
+;; Auto-Raise
+
+(defvar-setq raise-window-on-focus nil)
+
+;; Uptimes
+
+(defvar-setq uptimes-display-timeout 15)
