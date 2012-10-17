@@ -11,16 +11,11 @@
 
 ;;** load modules
 (require 'sawfish.wm.ext.match-window)
-;; (require 'sawfish.wm.commands.launcher)
 (require 'sawfish.wm.focus)
-;; (require 'sawfish.wm.gaol)
-;; (require 'sawfish.wm.misc)
 (require 'sawfish.wm.windows)
 (require 'sawfish.wm.util.compat)
 (require 'sawfish.wm.workspace)
-;; (require 'sawfish.wm.state.wm-spec)
 (require 'sawfish.wm.ext.wallpaper)
-;; (require 'sawfish.desktop-integration)
 (require 'rep.io.timers)
 
 ;;** Menu
@@ -82,8 +77,6 @@
 
 
 ;;* Look and feel, appearance
-;; (define-special-variable default-frame-style 'candido)
-;; (define-special-variable default-frame-style 'LiquidGnome)
 ;;** theme
 (custom-set-typed-variable (quote default-frame-style) (quote Bluecurve-Prion) (quote frame-style))
 
@@ -101,32 +94,13 @@
 (custom-set-typed-variable (quote custom-text-x-position) (quote center) (quote (choice default left center right)))
 
 
-;; (default-cursor (get-cursor 'dot))
-;; (default-cursor (get-cursor "oxy-neon")
-
-;; TODO
-;; (custom-set-typed-variable 'default-frame-style 'candido 'frame-style)
-;; (custom-set-typed-variable (quote use-custom-font) (quote ()) (quote boolean))
-;; (define-special-variable decorate-transients t)
-;; (define-special-variable use-custom-font-color nil)
-;; (define-special-variable frame-font-active-color "white")
-;; (define-special-variable frame-font-inactive-color "grey85")
-
 ;;** animation
 (define-special-variable default-window-animator 'wireframe)
-;; (define-special-variable anim-outline-icon-coords '(0 . 0))
-;; (define-special-variable anim-outline-steps 45)
-;; (define-special-variable anim-outline-delay 15)
-;; (define-special-variable move-outline-mode 'cross)
-;; (define-special-variable resize-outline-mode 'elliptical)
 
 ;;** wallpaper
-;; TODO show wallpaper gradient
 (defvar-setq root-wallpaper "~/.wallpapers/Ariya/contents/images/1280x800.png")
 (defvar-setq wallpaper-setter "hsetroot")
 (defvar-setq wallpaper-setter-args "-center")
-;; (set-wallpaper)
-;; (system (concat wallpaper-setter " " wallpaper-setter-args " " wallpaper-filename " &"))
 (system "hsetroot -center ~/.wallpapers/Ariya/contents/images/1280x800.png &")
 
 ;;** transparency
@@ -140,17 +114,14 @@
            ;;*** window
            "M-TAB"   'cycle-windows
            "M-ISO_Left_Tab" 'cycle-windows-backwards
-           ;; "W-ISO_Left_Tab" 'cycle-windows-backwards ; TODO
            "W-TAB"   'cycle-windows-backwards
            "W-j"     'previous-workspace-window
-           ;; "W-S-j"   'cycle-windows-backwards
            "W-k"     'next-workspace-window
            "W-S-k"   'maximize-fill-window-toggle ;TODO
            "W-z"     'toggle-window-iconified
            "W-S-z"   'iconify-workspace-windows
            "W-m"     'maximize-fill-window-toggle
            "W-S-m"   'maximize-window-fullscreen-toggle
-           ;; "C-S-q"   'close-all-windows
 
            ;;*** menu
            "W-Menu"  'popup-window-menu
@@ -164,7 +135,6 @@
            ;; TODO
            "W-S-h"   'send-to-previous-workspace
            "W-S-l"   'send-to-next-workspace
-           ;; "W-w"     'select-workspace-interactively ;TOOD
            "W-F1"    '(activate-workspace 1)
            "W-F2"    '(activate-workspace 2)
            "W-F3"    '(activate-workspace 3)
@@ -183,29 +153,28 @@
            "W-S-f"  '(send-to-workspace 4)
 
            ;;*** action
-           ;; "F1"      '(system "true &")
+           ;; "F1"      '(system "true &") ;TODO
            "W-C-c"  '(system "sawfish-config &")
            "W-C-e"  'display-errors
            "W-e"    '(display-message nil) ;erase displayed message
-           ;; "C-M-DEL" 'display-errors    ;TODO
-           ;; "C-W-n"   'restart
-           ;; "C-W-q"   'quit
-           "C-W-a"   'view-clipboard
            "M-F2"    `(jump-or-exec "Run dialog" "krunner" t)
 
            ;;**** screensaver
            "W-;"     '(system "(sleep 0.5; xset dpms force off) &")
            "Pause"   '(system "xscreensaver-command -lock & (sleep 2; xset dpms force off) &")
-           ;; "C-W-t"   '(system "eject -T /dev/scd0 &")
-           ;; "C-W-x"   '(system "xkill &")
-           ;; "Print"   '(system "ksnapshot -c &")
-           ;; TODO
+
+           ;;**** print screen
            "Print"   '(jump-or-exec "KSnapshot" "ksnapshot -c")
            "M-Print" '(system "ksnapshot --fullscreen &")
            "C-Print" '(system "ksnapshot --region &")
            ;; "Print"   '(system "import -border window.png &")
            ;; "C-Print" '(system "import -window root root.png &")
-           ;; "W-F2"    `(jump-or-exec "Gnome-run-dialog" "gnome-run-dialog" t)
+
+           ;;**** restart and quit TODO
+           "C-M-Delete"   'restart
+           "W-C-M-Delete" 'quit
+
+           ;;**** other
            ;; "W-F2"    `(jump-or-exec "Gnome-run-dialog" "gnome-run-dialog" t)
            ;; "W-F6"    `(jump-or-exec "Geeqie" "geeqie" nil)
            ;; "W-F7"    `(jump-or-exec "Iceweasel" "iceweasel" t)
@@ -214,9 +183,9 @@
            ;; "W-F10"   `(jump-or-exec "Geany" "geany" t)
            ;; "W-F11"   `(jump-or-exec "Glade-3" "glade-3" t)
            ;; "Home"    `(jump-or-exec "Nautilus" "nautilus --no-desktop ~" t)
+           ;; "C-W-t"   '(system "eject -T /dev/scd0 &")
+           ;; "C-W-x"   '(system "xkill &")
 
-           "C-M-Delete"   'restart
-           "W-C-M-Delete" 'quit
            )
 
 ;;** Application Keymacros
@@ -225,10 +194,7 @@
 
 (defvar-setq nomatch-text "" "a string that will never match normal text")
 (bind-keys apps-keymap
-  ;; "r"   `(jump-or-exec "Gnome-run-dialog" "/usr/local/bin/gnome-run-dialog" #:match-class t )
   "e"   `(jump-or-exec "Emacs" "emacs" t #:match-class t)
-                       ;; (lambda (w) (kid-display-message "starting Emacs ...")
-                         ;; (display-window w)))
   "f"   `(jump-or-exec "Dolphin" "dolphin" nil #:match-class t)
   "S-f" `(jump-or-exec nomatch-text "dolphin" nil #:match-class t)
   "t"   `(jump-or-exec "Konsole" "konsole" nil #:match-class t)
@@ -239,6 +205,7 @@
   "S-v" `(jump-or-exec nomatch-text "vlc" nil #:match-class t)
   "b"   '(jump-or-exec "Chromium" "chromium" nil #:match-class t)
   "S-b" '(jump-or-exec nomatch-text "chromium" nil #:match-class t)
+  ;; TODO
   ;; "t" '(xterm)
   ;; "b" '(browser)
   ;; "t" `(jump-or-exec "Flush" "flush" nil)
@@ -270,7 +237,6 @@
            (or (nth current-workspace workspace-names)
                (format nil (_ "Workspace %d") (1+ current-workspace))))
    display-ws-name-timeout))
-;; (define-command 'display-workspace-name display-workspace-name #:class 'default)
 
 (define (display-ws-name-setter)
   (if (eq display-ws-name-on-switch 't)
@@ -341,11 +307,8 @@
 
 (require 'sawfish.wm.commands.move-resize)
 
-;;*** move-resize-by-key-cursor TODO
-;; (setq move-cursor-increment 10)
-
+;;*** center-mouse-on-window-move
 (require 'center-mouse-on-window-move)
-;; (require 'move-resize-by-key-cursor)
 
 ;;*** move window in screen edges
 (require 'animate-move)
@@ -412,16 +375,6 @@
 (bind-keys global-keymap "W-C-S-l"   '(rsk-shove-size-window 'right 5))
 (bind-keys global-keymap "W-C-S-k"      '(rsk-shove-size-window 'up 5))
 (bind-keys global-keymap "W-C-S-j"    '(rsk-shove-size-window 'down 5))
-
-;; TODO
-;; (bind-keys global-keymap "W-M-Left"      '(rsk-shove-size-window 'left 30))
-;; (bind-keys global-keymap "W-M-Right"     '(rsk-shove-size-window 'right 30))
-;; (bind-keys global-keymap "W-M-Up"        '(rsk-shove-size-window 'up 30))
-;; (bind-keys global-keymap "W-M-Down"      '(rsk-shove-size-window 'down 30))
-;; (bind-keys global-keymap "W-M-S-Left"    '(rsk-shove-size-window 'left 5))
-;; (bind-keys global-keymap "W-M-S-Right"   '(rsk-shove-size-window 'right 5))
-;; (bind-keys global-keymap "W-M-S-Up"      '(rsk-shove-size-window 'up 5))
-;; (bind-keys global-keymap "W-M-S-Down"    '(rsk-shove-size-window 'down 5))
 
 (bind-keys global-keymap "W-KP_End"      '(rsk-grid-place-window 1))
 (bind-keys global-keymap "W-KP_Down"     '(rsk-grid-place-window 2))
@@ -499,28 +452,10 @@
 (bind-keys global-keymap "W-/"    'undo)
 (bind-keys global-keymap "W-?"    'undo-redo)
 
-;;** number windows TODO no work
+;;** number windows TODO not work
 ;; (require 'number-windows)
 
 ;;* init and cleanup, startup programs
-;; TODO
-;; (defun call-startup-programs (command-list)
-;;   "Run the programs specified in COMMAND-LIST when Sawfish start."
-;;   (mapcar #'(lambda (command)
-;;               (system (backgroundize command)))
-;;           command-list))
-;; (defvar my-startup-programs
-;;   '("ibus-daemon"
-;;     ;; "tint2" "nm-applet"
-;;     ))
-;; (call-startup-programs my-startup-programs)
-
-;; launch after a while
-;; kmix
-
-;; ;; ibus TODO
-;; (system "ibus-daemon &")
-
 (define my-startup-programs
   '(
     ;; ("xloadimage" "-onroot" "-fullscreen" "/home/kid/.desktop")
@@ -538,11 +473,6 @@
 (defun fsh/cleanup-on-exit ()
   (mapc stop-process (active-processes)))
 (add-hook 'before-exit-hook 'fsh/cleanup-on-exit 'end)
-
-;; (defun fsh/close-windows-safely-on-exit ()
-;;   ;; TODO wait for window closed
-;;   (map-windows delete-window-safely))
-;; (add-hook 'before-exit-hook 'fsh/close-windows-safely-on-exit)
 
 
 ;;* Miscellaneous
@@ -582,7 +512,6 @@
 (require 'uptimes)
 (bind-keys global-keymap "W-C-u" 'uptimes-display-uptime)
 (bind-keys global-keymap "W-C-S-u" 'uptimes-display-uptimes)
-
 
 ;;** shutdown TODO
 ;; (require 'shutdown)
