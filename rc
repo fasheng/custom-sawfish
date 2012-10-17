@@ -409,10 +409,10 @@
                     '((workspace . 1)))
 (add-window-matcher '((WM_CLASS . "^Vlc/vlc$"))
                     '((workspace . 3)))
-(add-window-matcher '((WM_CLASS . "^Konsole/konsole$"))
-                     '((frame-type . none)
-                       (depth . 0)
-                       (workspace . 2)))
+;; (add-window-matcher '((WM_CLASS . "^Konsole/konsole$"))
+;;                      '((frame-type . none)
+;;                        (depth . 0)
+;;                        (workspace . 2)))
 
 ;;*** transpose keymap
 (define-match-window-setter 'keymap-trans
