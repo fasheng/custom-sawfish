@@ -114,7 +114,7 @@
            ;;*** window
            "M-TAB"   'cycle-windows
            "M-ISO_Left_Tab" 'cycle-windows-backwards
-           "W-TAB"   'cycle-windows-backwards
+           ;; "W-TAB"   'cycle-windows-backwards
            "W-j"     'previous-workspace-window
            "W-k"     'next-workspace-window
            "W-S-k"   'maximize-fill-window-toggle ;TODO
@@ -409,10 +409,23 @@
                     '((workspace . 1)))
 (add-window-matcher '((WM_CLASS . "^Vlc/vlc$"))
                     '((workspace . 3)))
-;; (add-window-matcher '((WM_CLASS . "^Konsole/konsole$"))
-;;                      '((frame-type . none)
-;;                        (depth . 0)
-;;                        (workspace . 2)))
+;; (remove-window-matcher '((WM_CLASS . "^Ark/ark$"))
+;;                      '(frame-type
+;;                        depth
+;;                        workspace))
+;; TODO
+;; (add-window-matcher '((WM_CLASS . "^Ark/ark$"))
+;;                     '((fix-size . 50)))
+
+;;*** fix window size
+;; (define-match-window-setter 'fix-size
+;;   (lambda (w prop value)
+;;     (declare (unused prop))
+;;     (resize-window-to w value value)
+;;     ;; (let ((width (car value))
+;;     ;;       (height (cadr value)))
+;;     ;;     (resize-window-to w width height))
+;;         ))
 
 ;;*** transpose keymap
 (define-match-window-setter 'keymap-trans
@@ -456,16 +469,26 @@
 ;; (require 'number-windows)
 
 ;;* init and cleanup, startup programs
+
+;; enable window transparency TODO
+;;(system "xcompmgr -c -C -t-5 -l-5 -r4.2 -o.55 &")
+
 (define my-startup-programs
   '(
     ;; ("xloadimage" "-onroot" "-fullscreen" "/home/kid/.desktop")
     ;; ("asclock" "-theme" "/home/kid/.asclock/kid"))
+    ("xcompmgr" "-c" "-C" "-t-5" "-l-5" "-r4.2" "-o.55")
+    ;; ("xcompmgr" "-cCfF -r7 -o 0.65 -l-10 -t-8 -D7 -I 0.020 -O 0.020")
+
     ("xsetroot" "-cursor_name left_ptr")
     ("xscreensaver" "-no-splash")
     ("ibus-daemon")
     ("kmix")
     ("yakuake")
   ))
+
+;; (define my-startup-programs
+;;   '(("xcompmgr" "-c" "-C" "-t-5" "-l-5" "-r4.2" "-o.55")))
 (mapc (lambda (program)
         (apply start-process (make-process standard-output) program))
       my-startup-programs)
