@@ -561,12 +561,10 @@
                       ))
 
 ;;** volume control
-(require 'volume-control)
+(require 'fsh-volume-control-amixer)
 (bind-keys global-keymap "Super-=" 'audio-up
                          "Super--" 'audio-down
-                         "XF86AudioRaiseVolume" 'audio-up
-                         "XF86AudioLowerVolume" 'audio-down)
-;; "XF86AudioMute" 'audio-mute ; TODO
+                         "Super-0" 'audio-toggle-mute)
 
 ;;** custom app runner TODO
 ;; (add-window-matcher '((WM_CLASS . "^Konsole/konsole$"))
