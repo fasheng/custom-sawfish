@@ -16,6 +16,7 @@
 (require 'sawfish.wm.util.compat)
 (require 'sawfish.wm.workspace)
 (require 'sawfish.wm.ext.wallpaper)
+(require 'sawfish.wm.commands.jump-or-exec)
 (require 'rep.io.timers)
 
 ;;** Menu
@@ -43,11 +44,10 @@
 ;; (defvar-setq hot-spots-area 50)
 
 
-;;** xterm & browser todo
-;; (defvar-setq xterm-program "konsole")
-;; (defvar-setq browser-program "iceweasel")
-;; filemanager-program
-
+;;** config defualt xterm, filemanager and browser
+(defvar-setq xterm-program "terminal")
+(defvar-setq browser-program "chromium")
+(defvar-setq filemanager-program "nautilus")
 
 ;;** poweroff TODO
 
@@ -69,6 +69,11 @@
 ;; (sm-save-yourself)
 
 ;;* Custom functions TODO
+
+(defun fsh/toggle-window-visible (w)
+  (if (window-visible-p w)
+      (hide-window w)
+    (show-window w)))
 
 ;;** fsh/display-message
 (defun fsh/display-message (message #!optional seconds)
@@ -101,6 +106,7 @@
 (defvar-setq root-wallpaper "~/.wallpapers/Ariya/contents/images/1280x800.png")
 (defvar-setq wallpaper-setter "hsetroot")
 (defvar-setq wallpaper-setter-args "-center")
+;; set wallpaper manual
 (system "hsetroot -center ~/.wallpapers/Ariya/contents/images/1280x800.png &")
 
 ;;** transparency
@@ -157,7 +163,6 @@
            "W-C-c"  '(system "sawfish-config &")
            "W-C-e"  'display-errors
            "W-e"    '(display-message nil) ;erase displayed message
-           "M-F2"    `(jump-or-exec "Run dialog" "krunner" t)
 
            ;;**** screensaver
            "W-;"     '(system "(sleep 0.5; xset dpms force off) &")
@@ -195,14 +200,17 @@
 (defvar-setq nomatch-text "" "a string that will never match normal text")
 (bind-keys apps-keymap
   "e"   `(jump-or-exec "Emacs" "emacs" t #:match-class t)
-  "f"   `(jump-or-exec "Dolphin" "dolphin" nil #:match-class t)
-  "S-f" `(jump-or-exec nomatch-text "dolphin" nil #:match-class t)
-  "t"   `(jump-or-exec "Konsole" "konsole" nil #:match-class t)
-  "S-t" `(jump-or-exec nomatch-text "konsole" nil #:match-class t)
+
   "s"   `(jump-or-exec "SMPlayer" "smplayer" nil #:match-class t)
   "S-s" `(jump-or-exec nomatch-text "smplayer" nil #:match-class t)
   "v"   `(jump-or-exec "VLC media player" "vlc" nil #:match-class t)
   "S-v" `(jump-or-exec nomatch-text "vlc" nil #:match-class t)
+
+  "t"   `(jump-or-exec "Terminator" "terminator" #:match-class t
+                       #:onfocused (show-window (get-window-by-class "Terminator")))
+  "S-t" `(jump-or-exec nomatch-text "terminator" nil #:match-class t)
+  "f"   `(jump-or-exec "Nautilus" "nautilus" nil #:match-class t)
+  "S-f" `(jump-or-exec nomatch-text "nautilus" nil #:match-class t)
   "b"   '(jump-or-exec "Chromium" "chromium" nil #:match-class t)
   "S-b" '(jump-or-exec nomatch-text "chromium" nil #:match-class t)
   ;; TODO
@@ -414,39 +422,29 @@
 ;;                        depth
 ;;                        workspace))
 ;; TODO
-;; (add-window-matcher '((WM_CLASS . "^Ark/ark$"))
-;;                     '((fix-size . 50)))
+(add-window-matcher '((WM_CLASS . "^Ark/ark$"))
+                    '((dimensions . (800 . 600))))
 
-;;*** fix window size
-;; (define-match-window-setter 'fix-size
-;;   (lambda (w prop value)
-;;     (declare (unused prop))
-;;     (resize-window-to w value value)
-;;     ;; (let ((width (car value))
-;;     ;;       (height (cadr value)))
-;;     ;;     (resize-window-to w width height))
-;;         ))
-
-;;*** transpose keymap
-(define-match-window-setter 'keymap-trans
+;;*** test window matcher
+(define-match-window-setter 'fsh/test
   (lambda (w prop value)
     (declare (unused prop))
-    (let ((keymap (or (window-get w 'keymap)
-                      (window-put w 'keymap (copy-sequence window-keymap)))))
-      (mapcar
-       (lambda (pair)         ; pair of from and to keys
-         (bind-keys
-          keymap (car pair)
-          (lambda () (interactive)
-            (synthesize-event (lookup-event (cadr pair)) (input-focus)))))
-       value))))
+    (display-message (format nil "Volume: %s %s" (car value) (cdr value)))
+    ))
 
-;; make apps keybind like emacs
-(add-window-matcher '((WM_CLASS . "krunner")) ;krunner
-                    '((keymap-trans . (("C-p" "Up") ("C-n" "Down")
-                                      ("C-f" "Right") ("C-b" "Left")
-                                      ("C-j" "Return") ("C-g" "Esc")
-                                      ))))
+;;*** transpose keymap TODO
+;; (define-match-window-setter 'keymap-trans
+;;   (lambda (w prop value)
+;;     (declare (unused prop))
+;;     (let ((keymap (or (window-get w 'keymap)
+;;                       (window-put w 'keymap (copy-sequence window-keymap)))))
+;;       (mapcar
+;;        (lambda (pair)         ; pair of from and to keys
+;;          (bind-keys
+;;           keymap (car pair)
+;;           (lambda () (interactive)
+;;             (synthesize-event (lookup-event (cadr pair)) (input-focus)))))
+;;        value))))
 
 
 ;;** window snooper
@@ -469,41 +467,106 @@
 ;; (require 'number-windows)
 
 ;;* init and cleanup, startup programs
-
-;; enable window transparency TODO
-;;(system "xcompmgr -c -C -t-5 -l-5 -r4.2 -o.55 &")
-
 (define my-startup-programs
   '(
     ;; ("xloadimage" "-onroot" "-fullscreen" "/home/kid/.desktop")
     ;; ("asclock" "-theme" "/home/kid/.asclock/kid"))
-    ("xcompmgr" "-c" "-C" "-t-5" "-l-5" "-r4.2" "-o.55")
-    ;; ("xcompmgr" "-cCfF -r7 -o 0.65 -l-10 -t-8 -D7 -I 0.020 -O 0.020")
+    ("xcompmgr" "-cC" "-t-5" "-l-5" "-r4.2" "-o.55")
 
-    ("xsetroot" "-cursor_name left_ptr")
+    ("xsetroot" "-cursor_name" "left_ptr")
     ("xscreensaver" "-no-splash")
     ("ibus-daemon")
-    ("kmix")
-    ("yakuake")
+    ("tilda")                           ;just for SOS
   ))
 
-;; (define my-startup-programs
-;;   '(("xcompmgr" "-c" "-C" "-t-5" "-l-5" "-r4.2" "-o.55")))
 (mapc (lambda (program)
         (apply start-process (make-process standard-output) program))
       my-startup-programs)
 
 (defun fsh/cleanup-on-exit ()
-  (mapc stop-process (active-processes)))
+  ;; kill manually TODO
+  ;; (system "killall -- xcompmgr xscreensaver ibus-daemon")
+  (mapc kill-process (active-processes)))
 (add-hook 'before-exit-hook 'fsh/cleanup-on-exit 'end)
 
 
 ;;* Miscellaneous
 
-;;** volume control TODO
-;; (require 'volume-control)
-;; (bind-keys global-keymap "Super-=" 'audio-up
-;;                          "Super--" 'audio-down)
+;;** mock a quake style console TODO
+;; TODO
+(defvar-setq my-terminal-name "terminator")
+(defvar-setq my-terminal-wm-class "Terminator")
+(add-window-matcher '((WM_CLASS . "^Terminator/terminator$"))
+                    '((dimensions . (1200 . 400))
+                      (place-mode . centered)
+                      (fixed-positon . t)
+                      (position . north)
+                      (frame-type . top-border)
+                      (never-delete . t)
+                      (cycle-skip . t)
+                      (window-list-skip . t)
+                      (task-list-skip . t)
+                      (animator . none)
+                      ;; (fsh/matcher-transparency . #x80000000)
+                      ))
+;; TODO
+(remove-window-matcher '((WM_CLASS . "^Terminator/terminator$"))
+                    '(
+                      fsh/test
+                      ;; dimensions
+                      ;; frame-type
+                      ))
+
+;; global keybind
+(bind-keys global-keymap "F12"
+           `(jump-or-exec "Terminator" "terminator"
+                          #:match-class t
+                          #:onfocused iconify-window))
+                          ;; #:onfocused (fsh/toggle-window-visible (get-window-by-class my-terminal-wm-class))))
+
+;;*** auto hide terminal when lose focus TODO
+(defun fsh/hide-terminal-when-lose-focus-hook (win focus-mode)
+  "Makes the window that went out-of-focus, dim"
+   (let ((w_id (window-frame-id win))
+         (tw_id (window-frame-id (get-window-by-class my-terminal-wm-class))))
+     (if (= w_id tw_id)
+         (iconify-window win)))
+   (sync-server))
+;; (add-hook 'focus-out-hook fsh/hide-terminal-when-lose-focus-hook)
+
+;;*** set transparency TODO
+;; (define-match-window-setter 'fsh/matcher-transparency
+;;   (lambda (w prop value)
+;;     (declare (unused prop))
+;;     (set-x-property w '_NET_WM_WINDOW_OPACITY (make-vector 1 value) 'CARDINAL 32)
+;;     (sync-server)
+;;     ))
+
+;; (defvar my-terminal-trans #x80000000)
+;;  (make-vector 1 #x80000000)
+;;  (make-vector 1 *out-of-focus-trans*)
+;; (string-to-number "FF" 16)
+;; (set-x-property (get-window-by-class "Tilda") '_NET_WM_WINDOW_OPACITY (make-vector 1 my-terminal-trans) 'CARDINAL 32)
+;; (set-x-property (input-focus) '_NET_WM_WINDOW_OPACITY (make-vector 1 my-terminal-trans) 'CARDINAL 32)
+;; (delete-x-property (get-window-by-class "Tilda") '_NET_WM_WINDOW_OPACITY)
+;; (sync-server)
+
+;;*** only for Tilda
+(add-window-matcher '((WM_CLASS . "^Tilda/tilda$"))
+                    '((place-mode . centered)
+                      (fixed-positon . t)
+                      (position . north)
+                      (frame-type . top-border)
+                      (never-delete . t)
+                      ))
+
+;;** volume control
+(require 'volume-control)
+(bind-keys global-keymap "Super-=" 'audio-up
+                         "Super--" 'audio-down
+                         "XF86AudioRaiseVolume" 'audio-up
+                         "XF86AudioLowerVolume" 'audio-down)
+;; "XF86AudioMute" 'audio-mute ; TODO
 
 ;;** custom app runner TODO
 ;; (add-window-matcher '((WM_CLASS . "^Konsole/konsole$"))
@@ -514,9 +577,26 @@
 ;; (bind-keys global-keymap "Super-=" '())
 
 
-;; run applications TODO
+;;** run applications TODO
 ;; (require 'run-application-ng)
 ;; (bind-keys global-keymap "W-r"    'run-application)
+
+(bind-keys global-keymap "M-F2"
+           `(jump-or-exec "Xfce4-appfinder" "xfce4-appfinder" #:match-class t
+                            #:onfocused iconify-window))
+                            ;; #:onfocused fsh/toggle-window-visible))
+                          ;; #:onfocused (fsh/toggle-window-visible (get-window-by-class "Xfce4-appfinder"))))
+(add-window-matcher '((WM_CLASS . "^Xfce4-appfinder/xfce4-appfinder$"))
+                    '((animator . none)))
+
+;; emacs style keybindings
+(add-window-matcher '((WM_CLASS . "xfce4-appfinder"))
+                    '((keymap-trans . (("C-p" "Up") ("C-n" "Down")
+                                      ("C-f" "Right") ("C-b" "Left")
+                                      ("C-j" "Return") ("C-g" "Esc")
+                                      ("C-i" "TAB")
+                                      ))))
+
 
 ;;** fsh/describe-key TODO
 ;; (defun fsh/describe-key ()
@@ -546,3 +626,19 @@
 ;;       )
 ;; (nconc root-menu '(("_Quit" (shutdown quit))))
 ;; ;; (shutdown)
+
+;;** pager TODO
+;; (require 'sawfish.wm.ext.pager)
+;; (pager)
+
+;; (add-window-matcher '((WM_CLASS . "^Sawfishpager/sawfishpager$"))
+;;                      '((position . north-east)
+;;                         (fixed-positon . t)
+;;                         (never-maximize . t)
+;;                         (never-iconify . t)
+;;                         (frame-type . none)
+;;                         (cycle-skip . t)
+;;                         (window-list-skip . t)
+;;                         (sticky . t)
+;;                         (sticky-viewport . t)
+;;                         (avoid . ())))
