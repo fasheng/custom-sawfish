@@ -206,6 +206,7 @@
   "v"   `(jump-or-exec "Vlc" "vlc" nil #:match-class t)
   "S-v" `(jump-or-exec nomatch-text "vlc" nil #:match-class t)
   "m"   `(jump-or-exec "deadbeef" "deadbeef" nil #:match-class t)
+  "S-m" `(jump-or-exec "audacious" "audacious" nil #:match-class t)
 
   "t"   `(jump-or-exec "Terminator" "terminator" #:match-class t
                        #:onfocused (show-window (get-window-by-class "Terminator")))
@@ -467,6 +468,7 @@
     ("ibus-daemon")
     ("tilda")                           ;just for SOS TODO
     ("cairo-clock")
+    ("tint2")
   ))
 
 (mapc (lambda (program)
@@ -497,6 +499,9 @@
 (add-window-matcher '((WM_CLASS . "^Deadbeef/deadbeef$"))
                     '((workspace . 3)))
 
+;;** audacious
+(add-window-matcher '((WM_CLASS . "^Audacious/audacious$"))
+                    '((workspace . 3)))
 
 ;;** ark
 (add-window-matcher '((WM_CLASS . "^Ark/ark$"))
