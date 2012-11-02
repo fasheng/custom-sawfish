@@ -459,13 +459,13 @@
 (define my-startup-programs
   '(
     ;; ("xloadimage" "-onroot" "-fullscreen" "/home/kid/.desktop")
-    ;; ("asclock" "-theme" "/home/kid/.asclock/kid"))
-    ("compton" "-cC" "-t-5" "-l-5" "-r4.2" "-o.55")
+    ("compton" "-cC" "-t-5" "-l-5" "-r4.2" "-o.55" "-m.90" "--config" ".compton.conf")
 
     ("xsetroot" "-cursor_name" "left_ptr")
     ("xscreensaver" "-no-splash")
     ("ibus-daemon")
     ("tilda")                           ;just for SOS TODO
+    ("cairo-clock")
   ))
 
 (mapc (lambda (program)
@@ -570,6 +570,20 @@
                                       ("C-j" "Return") ("C-g" "Esc")
                                       ("C-i" "TAB")
                                       ))))
+
+;;** cairo-clock
+(add-window-matcher '((WM_CLASS . "Cairo-clock"))
+                    '((dimensions . (360 . 360))
+                      (position . north-east)
+                      (never-delete . t)
+                      (cycle-skip . t)
+                      (window-list-skip . t)
+                      (task-list-skip . t)
+                      (animator . none)
+                      (sticky . t)
+                      (never-focus . t)
+                      (depth . -1)
+                      ))
 
 
 ;;* Miscellaneous
