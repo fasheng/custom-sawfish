@@ -460,12 +460,12 @@
   '(
     ;; ("xloadimage" "-onroot" "-fullscreen" "/home/kid/.desktop")
     ;; ("asclock" "-theme" "/home/kid/.asclock/kid"))
-    ("xcompmgr" "-cC" "-t-5" "-l-5" "-r4.2" "-o.55")
+    ("compton" "-cC" "-t-5" "-l-5" "-r4.2" "-o.55")
 
     ("xsetroot" "-cursor_name" "left_ptr")
     ("xscreensaver" "-no-splash")
     ("ibus-daemon")
-    ("tilda")                           ;just for SOS
+    ("tilda")                           ;just for SOS TODO
   ))
 
 (mapc (lambda (program)
@@ -505,18 +505,13 @@
                       (place-mode . centered)
                       (fixed-positon . t)
                       (position . north)
-                      (frame-type . top-border)
-                      ;; (frame-type . )
+                      (frame-type . none)
                       (never-delete . t)
                       (cycle-skip . t)
                       (window-list-skip . t)
                       (task-list-skip . t)
                       (animator . none)
                       (sticky . t)
-                      ;; (never-focus . t)
-                      ;; (fsh/matcher-transparency . #x80000000)
-                      ;; (frame-style . nil)
-                      ;; (find-all-frame-styles t)
                       ))
 ;; TODO
 (remove-window-matcher '((WM_CLASS . "^Terminator/terminator$"))
