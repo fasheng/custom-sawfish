@@ -411,20 +411,6 @@
 
 ;;** window matcher, action for special windows
 
-(add-window-matcher '((WM_CLASS . "^Emacs/emacs$"))
-                    '((workspace . 1)))
-(add-window-matcher '((WM_CLASS . "^Chromium/chromium$"))
-                    '((workspace . 1)))
-(add-window-matcher '((WM_CLASS . "^Vlc/vlc$"))
-                    '((workspace . 3)))
-;; (remove-window-matcher '((WM_CLASS . "^Ark/ark$"))
-;;                      '(frame-type
-;;                        depth
-;;                        workspace))
-;; TODO
-(add-window-matcher '((WM_CLASS . "^Ark/ark$"))
-                    '((dimensions . (800 . 600))))
-
 ;;*** test window matcher
 (define-match-window-setter 'fsh/test
   (lambda (w prop value)
@@ -432,19 +418,22 @@
     (display-message (format nil "Volume: %s %s" (car value) (cdr value)))
     ))
 
-;;*** transpose keymap TODO
-;; (define-match-window-setter 'keymap-trans
+;;*** set transparency TODO
+;; (define-match-window-setter 'fsh/matcher-transparency
 ;;   (lambda (w prop value)
 ;;     (declare (unused prop))
-;;     (let ((keymap (or (window-get w 'keymap)
-;;                       (window-put w 'keymap (copy-sequence window-keymap)))))
-;;       (mapcar
-;;        (lambda (pair)         ; pair of from and to keys
-;;          (bind-keys
-;;           keymap (car pair)
-;;           (lambda () (interactive)
-;;             (synthesize-event (lookup-event (cadr pair)) (input-focus)))))
-;;        value))))
+;;     (set-x-property w '_NET_WM_WINDOW_OPACITY (make-vector 1 value) 'CARDINAL 32)
+;;     (sync-server)
+;;     ))
+
+;; (defvar my-terminal-trans #x80000000)
+;;  (make-vector 1 #x80000000)
+;;  (make-vector 1 *out-of-focus-trans*)
+;; (string-to-number "FF" 16)
+;; (set-x-property (get-window-by-class "Tilda") '_NET_WM_WINDOW_OPACITY (make-vector 1 my-terminal-trans) 'CARDINAL 32)
+;; (set-x-property (input-focus) '_NET_WM_WINDOW_OPACITY (make-vector 1 my-terminal-trans) 'CARDINAL 32)
+;; (delete-x-property (get-window-by-class "Tilda") '_NET_WM_WINDOW_OPACITY)
+;; (sync-server)
 
 
 ;;** window snooper
@@ -466,7 +455,7 @@
 ;;** number windows TODO not work
 ;; (require 'number-windows)
 
-;;* init and cleanup, startup programs
+;;* Init and cleanup, startup programs
 (define my-startup-programs
   '(
     ;; ("xloadimage" "-onroot" "-fullscreen" "/home/kid/.desktop")
@@ -490,7 +479,22 @@
 (add-hook 'before-exit-hook 'fsh/cleanup-on-exit 'end)
 
 
-;;* Miscellaneous
+;;* Config for target application
+;;** emacs
+(add-window-matcher '((WM_CLASS . "^Emacs/emacs$"))
+                    '((workspace . 1)))
+
+;;** chromium
+(add-window-matcher '((WM_CLASS . "^Chromium/chromium$"))
+                    '((workspace . 1)))
+
+;;** vlc
+(add-window-matcher '((WM_CLASS . "^Vlc/vlc$"))
+                    '((workspace . 3)))
+
+;;** ark
+(add-window-matcher '((WM_CLASS . "^Ark/ark$"))
+                    '((dimensions . (800 . 600))))
 
 ;;** mock a quake style console TODO
 ;; TODO
@@ -502,21 +506,29 @@
                       (fixed-positon . t)
                       (position . north)
                       (frame-type . top-border)
+                      ;; (frame-type . )
                       (never-delete . t)
                       (cycle-skip . t)
                       (window-list-skip . t)
                       (task-list-skip . t)
                       (animator . none)
+                      (sticky . t)
+                      ;; (never-focus . t)
                       ;; (fsh/matcher-transparency . #x80000000)
+                      ;; (frame-style . nil)
+                      ;; (find-all-frame-styles t)
                       ))
 ;; TODO
 (remove-window-matcher '((WM_CLASS . "^Terminator/terminator$"))
                     '(
                       fsh/test
+                      ;; sticky
+                      ;; frame-type
+                      ;; frame-style
+                      ;; never-focus
                       ;; dimensions
                       ;; frame-type
                       ))
-
 ;; global keybind
 (bind-keys global-keymap "F12"
            `(jump-or-exec "Terminator" "terminator"
@@ -534,23 +546,6 @@
    (sync-server))
 ;; (add-hook 'focus-out-hook fsh/hide-terminal-when-lose-focus-hook)
 
-;;*** set transparency TODO
-;; (define-match-window-setter 'fsh/matcher-transparency
-;;   (lambda (w prop value)
-;;     (declare (unused prop))
-;;     (set-x-property w '_NET_WM_WINDOW_OPACITY (make-vector 1 value) 'CARDINAL 32)
-;;     (sync-server)
-;;     ))
-
-;; (defvar my-terminal-trans #x80000000)
-;;  (make-vector 1 #x80000000)
-;;  (make-vector 1 *out-of-focus-trans*)
-;; (string-to-number "FF" 16)
-;; (set-x-property (get-window-by-class "Tilda") '_NET_WM_WINDOW_OPACITY (make-vector 1 my-terminal-trans) 'CARDINAL 32)
-;; (set-x-property (input-focus) '_NET_WM_WINDOW_OPACITY (make-vector 1 my-terminal-trans) 'CARDINAL 32)
-;; (delete-x-property (get-window-by-class "Tilda") '_NET_WM_WINDOW_OPACITY)
-;; (sync-server)
-
 ;;*** only for Tilda
 (add-window-matcher '((WM_CLASS . "^Tilda/tilda$"))
                     '((place-mode . centered)
@@ -558,42 +553,37 @@
                       (position . north)
                       (frame-type . top-border)
                       (never-delete . t)
+                      (sticky . t)
                       ))
 
-;;** volume control
-(require 'fsh-volume-control-amixer)
-(bind-keys global-keymap "Super-=" 'audio-up
-                         "Super--" 'audio-down
-                         "Super-0" 'audio-toggle-mute)
-
-;;** custom app runner TODO
-;; (add-window-matcher '((WM_CLASS . "^Konsole/konsole$"))
-;;                      '((frame-type . none)
-;;                        (depth . 0)
-;;                        (workspace . 2)))
-;; (synthesize-event "F12" wind)
-;; (bind-keys global-keymap "Super-=" '())
-
-
-;;** run applications TODO
-;; (require 'run-application-ng)
+;;** app runner
+;; (require 'run-application-ng) ;TODO
 ;; (bind-keys global-keymap "W-r"    'run-application)
 
 (bind-keys global-keymap "M-F2"
-           `(jump-or-exec "Xfce4-appfinder" "xfce4-appfinder" #:match-class t
+           `(jump-or-exec "Xfce4-appfinder" "xfce4-appfinder -c" #:match-class t
                             #:onfocused iconify-window))
                             ;; #:onfocused fsh/toggle-window-visible))
                           ;; #:onfocused (fsh/toggle-window-visible (get-window-by-class "Xfce4-appfinder"))))
 (add-window-matcher '((WM_CLASS . "^Xfce4-appfinder/xfce4-appfinder$"))
                     '((animator . none)))
 
-;; emacs style keybindings
+;;*** emacs style keybindings
 (add-window-matcher '((WM_CLASS . "xfce4-appfinder"))
                     '((keymap-trans . (("C-p" "Up") ("C-n" "Down")
                                       ("C-f" "Right") ("C-b" "Left")
                                       ("C-j" "Return") ("C-g" "Esc")
                                       ("C-i" "TAB")
                                       ))))
+
+
+;;* Miscellaneous
+
+;;** volume control
+(require 'fsh-volume-control-amixer)
+(bind-keys global-keymap "Super-=" 'audio-up
+                         "Super--" 'audio-down
+                         "Super-0" 'audio-toggle-mute)
 
 
 ;;** fsh/describe-key TODO
