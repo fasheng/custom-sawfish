@@ -201,10 +201,11 @@
 (bind-keys apps-keymap
   "e"   `(jump-or-exec "Emacs" "emacs" t #:match-class t)
 
-  "s"   `(jump-or-exec "SMPlayer" "smplayer" nil #:match-class t)
+  "s"   `(jump-or-exec "smplayer" "smplayer" nil #:match-class t)
   "S-s" `(jump-or-exec nomatch-text "smplayer" nil #:match-class t)
-  "v"   `(jump-or-exec "VLC media player" "vlc" nil #:match-class t)
+  "v"   `(jump-or-exec "Vlc" "vlc" nil #:match-class t)
   "S-v" `(jump-or-exec nomatch-text "vlc" nil #:match-class t)
+  "m"   `(jump-or-exec "deadbeef" "deadbeef" nil #:match-class t)
 
   "t"   `(jump-or-exec "Terminator" "terminator" #:match-class t
                        #:onfocused (show-window (get-window-by-class "Terminator")))
@@ -492,6 +493,11 @@
 (add-window-matcher '((WM_CLASS . "^Vlc/vlc$"))
                     '((workspace . 3)))
 
+;;** deadbeef
+(add-window-matcher '((WM_CLASS . "^Deadbeef/deadbeef$"))
+                    '((workspace . 3)))
+
+
 ;;** ark
 (add-window-matcher '((WM_CLASS . "^Ark/ark$"))
                     '((dimensions . (800 . 600))))
@@ -505,7 +511,7 @@
                       (place-mode . centered)
                       (fixed-positon . t)
                       (position . north)
-                      (frame-type . none)
+                      (frame-type . top-border)
                       (never-delete . t)
                       (cycle-skip . t)
                       (window-list-skip . t)
