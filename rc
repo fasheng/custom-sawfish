@@ -48,6 +48,9 @@
 (defvar-setq xterm-program "terminal")
 (defvar-setq browser-program "chromium")
 (defvar-setq filemanager-program "nautilus")
+;; screenshot
+;; media player
+;; music player
 
 ;;** poweroff TODO
 
@@ -101,6 +104,7 @@
 
 ;;** animation
 (define-special-variable default-window-animator 'wireframe)
+(setq animate-move-delay 10)
 
 ;;** wallpaper
 (defvar-setq root-wallpaper "~/.wallpapers/Ariya/contents/images/1280x800.png")
@@ -205,8 +209,8 @@
   "S-s" `(jump-or-exec nomatch-text "smplayer" nil #:match-class t)
   "v"   `(jump-or-exec "Vlc" "vlc" nil #:match-class t)
   "S-v" `(jump-or-exec nomatch-text "vlc" nil #:match-class t)
-  "m"   `(jump-or-exec "deadbeef" "deadbeef" nil #:match-class t)
-  "S-m" `(jump-or-exec "audacious" "audacious" nil #:match-class t)
+  "m" `(jump-or-exec "audacious" "audacious" nil #:match-class t)
+  "S-m"   `(jump-or-exec "deadbeef" "deadbeef" nil #:match-class t)
 
   "t"   `(jump-or-exec "Terminator" "terminator" #:match-class t
                        #:onfocused (show-window (get-window-by-class "Terminator")))
@@ -461,14 +465,16 @@
 (define my-startup-programs
   '(
     ;; ("xloadimage" "-onroot" "-fullscreen" "/home/kid/.desktop")
-    ("compton" "-cC" "-t-5" "-l-5" "-r4.2" "-o.55" "-m.90" "--config" ".compton.conf")
+    ("compton" "-cC" "-t-3.4" "-l-5" "-r4.2" "-o.55" "-m.90" "--config" ".compton.conf")
 
     ("xsetroot" "-cursor_name" "left_ptr")
     ("xscreensaver" "-no-splash")
     ("ibus-daemon")
-    ("tilda")                           ;just for SOS TODO
     ("cairo-clock")
     ("tint2")
+    ("conky")
+    ("numlockx on")
+    ("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
   ))
 
 (mapc (lambda (program)
@@ -481,6 +487,8 @@
   (mapc kill-process (active-processes)))
 (add-hook 'before-exit-hook 'fsh/cleanup-on-exit 'end)
 
+;;** just for SOS TODO
+(system "tilda&")
 
 ;;* Config for target application
 ;;** emacs
@@ -507,12 +515,37 @@
 (add-window-matcher '((WM_CLASS . "^Ark/ark$"))
                     '((dimensions . (800 . 600))))
 
+;;** cairo-clock
+(add-window-matcher '((WM_CLASS . "Cairo-clock"))
+                    '((dimensions . (360 . 360))
+                      (position . north-west)
+                      (never-delete . t)
+                      (cycle-skip . t)
+                      (window-list-skip . t)
+                      (task-list-skip . t)
+                      (animator . none)
+                      (sticky . t)
+                      (never-focus . t)
+                      (depth . -1)
+                      ))
+
+;;** conky
+(add-window-matcher '((WM_CLASS . "Conky"))
+                    '((never-focus . t)
+                      (never-iconify . t)
+                      ))
+
+;;** tint2
+(add-window-matcher '((WM_CLASS . "Tint2"))
+                    '((never-focus . t)
+                      ))
+
 ;;** mock a quake style console TODO
 ;; TODO
 (defvar-setq my-terminal-name "terminator")
 (defvar-setq my-terminal-wm-class "Terminator")
 (add-window-matcher '((WM_CLASS . "^Terminator/terminator$"))
-                    '((dimensions . (1200 . 400))
+                    '((dimensions . (1200 . 410))
                       (place-mode . centered)
                       (fixed-positon . t)
                       (position . north)
@@ -581,21 +614,6 @@
                                       ("C-j" "Return") ("C-g" "Esc")
                                       ("C-i" "TAB")
                                       ))))
-
-;;** cairo-clock
-(add-window-matcher '((WM_CLASS . "Cairo-clock"))
-                    '((dimensions . (360 . 360))
-                      (position . north-east)
-                      (never-delete . t)
-                      (cycle-skip . t)
-                      (window-list-skip . t)
-                      (task-list-skip . t)
-                      (animator . none)
-                      (sticky . t)
-                      (never-focus . t)
-                      (depth . -1)
-                      ))
-
 
 ;;* Miscellaneous
 

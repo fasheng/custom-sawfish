@@ -16,7 +16,7 @@
                 (make-timer (lambda () (display-message nil)) 1))))
 
 (defun display-volume ()
-  (set-timer volume-display-timer 0 200))
+  (set-timer volume-display-timer 0 300))
 
 (defun amixer-inc (increment)
   (let ((val (if (> increment 0)
