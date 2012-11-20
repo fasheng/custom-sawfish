@@ -125,8 +125,8 @@
            "M-TAB"   'cycle-windows
            "M-ISO_Left_Tab" 'cycle-windows-backwards
            ;; "W-TAB"   'cycle-windows-backwards
-           "W-j"     'previous-workspace-window
-           "W-k"     'next-workspace-window
+           "W-j"     'next-workspace-window
+           "W-k"     'previous-workspace-window
            "W-S-k"   'maximize-fill-window-toggle ;TODO
            "W-z"     'toggle-window-iconified
            "W-S-z"   'iconify-workspace-windows
@@ -205,8 +205,9 @@
   "S-s" `(jump-or-exec nomatch-text "smplayer" nil #:match-class t)
   "v"   `(jump-or-exec "Vlc" "vlc" nil #:match-class t)
   "S-v" `(jump-or-exec nomatch-text "vlc" nil #:match-class t)
-  "m" `(jump-or-exec "audacious" "audacious" nil #:match-class t)
-  "S-m"   `(jump-or-exec "deadbeef" "deadbeef" nil #:match-class t)
+  "m"   `(jump-or-exec "audacious" "audacious" nil #:match-class t)
+  "S-m" `(jump-or-exec "deadbeef" "deadbeef" nil #:match-class t) ;TODO
+  "l"   `(jump-or-exec "Liferea" "liferea" nil #:match-class t)
 
   "t"   `(jump-or-exec "Terminator" "terminator" #:match-class t
                        #:onfocused (show-window (get-window-by-class "Terminator")))
@@ -505,6 +506,10 @@
 
 ;;** audacious
 (add-window-matcher '((WM_CLASS . "^Audacious/audacious$"))
+                    '((workspace . 3)))
+
+;;** liferea
+(add-window-matcher '((WM_CLASS . "^Liferea/liferea$"))
                     '((workspace . 3)))
 
 ;;** ark
