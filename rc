@@ -179,10 +179,6 @@
            ;; "Print"   '(system "import -border window.png &")
            ;; "C-Print" '(system "import -window root root.png &")
 
-           ;;**** restart and quit TODO
-           "C-M-Delete"   'restart
-           "W-C-M-Delete" 'quit
-
            ;;**** other
            ;; "W-F2"    `(jump-or-exec "Gnome-run-dialog" "gnome-run-dialog" t)
            ;; "W-F6"    `(jump-or-exec "Geeqie" "geeqie" nil)
@@ -610,10 +606,10 @@
 ;;*** emacs style keybindings
 (add-window-matcher '((WM_CLASS . "xfce4-appfinder"))
                     '((keymap-trans . (("C-p" "Up") ("C-n" "Down")
-                                      ("C-f" "Right") ("C-b" "Left")
-                                      ("C-j" "Return") ("C-g" "Esc")
-                                      ("C-i" "TAB")
-                                      ))))
+                                       ("C-f" "Right") ("C-b" "Left")
+                                       ("C-j" "Return") ("C-g" "Esc")
+                                       ("C-i" "TAB")
+                                       ))))
 
 ;;* Miscellaneous
 
@@ -652,6 +648,15 @@
 ;;       )
 ;; (nconc root-menu '(("_Quit" (shutdown quit))))
 ;; ;; (shutdown)
+
+;;** poweroff ssd
+(bind-keys global-keymap
+           "C-M-Delete"   '(system "ssd &")
+           "W-C-M-Delete" 'restart)
+;; (add-window-matcher '((WM_CLASS . "Sawfish-Session-Dialog"))
+;;                     '((keymap-trans . (("Esc" "M-F4") ("C-g" "M-F4")
+;;                                        ("C-c" "M-F4")
+;;                                        ))))
 
 ;;** pager TODO
 ;; (require 'sawfish.wm.ext.pager)
