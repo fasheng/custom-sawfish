@@ -212,8 +212,9 @@
   "t"   `(jump-or-exec "Terminator" "terminator" #:match-class t
                        #:onfocused (show-window (get-window-by-class "Terminator")))
   "S-t" `(jump-or-exec nomatch-text "terminator" nil #:match-class t)
-  "f"   `(jump-or-exec "Nautilus" "nautilus" nil #:match-class t)
-  "S-f" `(jump-or-exec nomatch-text "nautilus" nil #:match-class t)
+  "f"   `(jump-or-exec "Pcmanfm" "pcmanfm" nil #:match-class t)
+  ;; "f"   `(jump-or-exec "Thunar" "thunar" nil #:match-class t)
+  "S-f"   `(jump-or-exec "Nautilus" "nautilus" nil #:match-class t)
   "b"   '(jump-or-exec "Chromium" "chromium" nil #:match-class t)
   "S-b" '(jump-or-exec nomatch-text "chromium" nil #:match-class t)
   ;; TODO
