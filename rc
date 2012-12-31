@@ -86,7 +86,7 @@
 
 ;;* Look and feel, appearance
 ;;** theme
-(custom-set-typed-variable (quote default-frame-style) (quote Bluecurve-Prion) (quote frame-style))
+;; (custom-set-typed-variable (quote default-frame-style) (quote Bluecurve-Prion) (quote frame-style))
 
 ;;** font
 (custom-set-typed-variable 'default-font '("Pango" . "WenQuanYi Zen Hei Medium 11") 'font)
