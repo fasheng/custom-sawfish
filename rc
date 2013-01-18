@@ -485,9 +485,6 @@
   (mapc kill-process (active-processes)))
 (add-hook 'before-exit-hook 'fsh/cleanup-on-exit 'end)
 
-;;** just for SOS TODO
-(system "tilda&")
-
 ;;* Config for target application
 ;;** emacs
 (add-window-matcher '((WM_CLASS . "^Emacs/emacs$"))
