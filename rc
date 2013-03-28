@@ -467,7 +467,7 @@
 
     ("xsetroot" "-cursor_name" "left_ptr")
     ("xscreensaver" "-no-splash")
-    ("ibus-daemon")
+    ("fcitx")
     ("cairo-clock")
     ("tint2")
     ("conky")
