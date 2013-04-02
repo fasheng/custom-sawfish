@@ -199,7 +199,8 @@
 
 (defvar-setq nomatch-text "" "a string that will never match normal text")
 (bind-keys apps-keymap
-  "e"   `(jump-or-exec "Emacs" "emacs" t #:match-class t)
+  "e"   `(jump-or-exec "Emacs" "emacs-with-im" t #:match-class t)
+  "S-e" `(jump-or-exec "Emacs" "emacs" t #:match-class t)
 
   "s"   `(jump-or-exec "smplayer" "smplayer" nil #:match-class t)
   "S-s" `(jump-or-exec nomatch-text "smplayer" nil #:match-class t)
@@ -207,7 +208,8 @@
   "S-v" `(jump-or-exec "VirtualBox" "VirtualBox" nil #:match-class t)
   "m"   `(jump-or-exec "audacious" "audacious" nil #:match-class t)
   "S-m" `(jump-or-exec "deadbeef" "deadbeef" nil #:match-class t) ;TODO
-  "l"   `(jump-or-exec "Liferea" "liferea" nil #:match-class t)
+  "r"   `(jump-or-exec "Liferea" "liferea" nil #:match-class t)
+  "i"   `(jump-or-exec "Gthumb" "gthumb" nil #:match-class t)
 
   "t"   `(jump-or-exec "Terminator" "terminator" #:match-class t
                        #:onfocused (show-window (get-window-by-class "Terminator")))
