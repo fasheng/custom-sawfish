@@ -544,6 +544,10 @@
                     '((never-focus . t)
                       ))
 
+;;** deluge
+(add-window-matcher '((WM_CLASS . "Deluge"))
+                    '((workspace . 2)))
+
 ;;** mock a quake style console TODO
 ;; TODO
 (defvar-setq my-terminal-name "terminator")
