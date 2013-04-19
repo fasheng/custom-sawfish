@@ -211,12 +211,12 @@
   "r"   `(jump-or-exec "Liferea" "liferea" nil #:match-class t)
   "i"   `(jump-or-exec "Gthumb" "gthumb" nil #:match-class t)
 
-  "t"   `(jump-or-exec "Terminator" "terminator" #:match-class t
-                       #:onfocused (show-window (get-window-by-class "Terminator")))
-  "S-t" `(jump-or-exec nomatch-text "terminator" nil #:match-class t)
+  "t"   `(jump-or-exec "URxvt" "urxvt" #:match-class t)
+                       ;; #:onfocused (show-window (get-window-by-class "Terminator")))
+  "S-t" `(jump-or-exec nomatch-text "urxvt" nil #:match-class t)
   ;; "f"   `(jump-or-exec "Pcmanfm" "pcmanfm" nil #:match-class t)
   "f"   `(jump-or-exec "Thunar" "thunar" nil #:match-class t)
-  "S-f"   `(jump-or-exec "Nautilus" "nautilus" nil #:match-class t)
+  "S-f" `(jump-or-exec "Nautilus" "nautilus" nil #:match-class t)
   "b"   '(jump-or-exec "Chromium" "chromium" nil #:match-class t)
   "S-b" '(jump-or-exec nomatch-text "chromium" nil #:match-class t)
   ;; TODO
@@ -475,6 +475,7 @@
     ("conky")
     ("numlockx on")
     ("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
+    ;; ("tilda")
   ))
 
 (mapc (lambda (program)
@@ -490,7 +491,11 @@
 ;;* Config for target application
 ;;** emacs
 (add-window-matcher '((WM_CLASS . "^Emacs/emacs$"))
-                    '((workspace . 1)))
+                    '((dimensions . (1040 . 580))
+                      (place-mode . centered)
+                      (fixed-positon . t)
+                      (never-delete . t)
+                      (workspace . 1)))
 
 ;;** chromium
 (add-window-matcher '((WM_CLASS . "^Chromium/chromium$"))
@@ -549,9 +554,18 @@
                     '((workspace . 2)))
 
 ;;** mock a quake style console TODO
-;; TODO
-(defvar-setq my-terminal-name "terminator")
-(defvar-setq my-terminal-wm-class "Terminator")
+(defvar-setq my-terminal-name "xfce4-terminal")
+(defvar-setq my-terminal-wm-class "Xfce4-terminal")
+
+;; global keybind
+(bind-keys global-keymap "F12"
+           `(jump-or-exec "Xfce4-terminal" "xfce4-terminal"
+                          #:match-class t
+                          #:onfocused iconify-window))
+                          ;; #:onfocused (fsh/toggle-window-visible (get-window-by-class my-terminal-wm-class))))
+           ;; `(jump-or-exec "Tilda" "tilda"
+
+;;*** Terminator
 (add-window-matcher '((WM_CLASS . "^Terminator/terminator$"))
                     '((dimensions . (1200 . 410))
                       (place-mode . centered)
@@ -565,23 +579,36 @@
                       (animator . none)
                       (sticky . t)
                       ))
-;; TODO
-(remove-window-matcher '((WM_CLASS . "^Terminator/terminator$"))
-                    '(
-                      fsh/test
-                      ;; sticky
-                      ;; frame-type
-                      ;; frame-style
-                      ;; never-focus
-                      ;; dimensions
-                      ;; frame-type
+
+;;*** xfce4-terminal
+(add-window-matcher '((WM_CLASS . "^Xfce4-terminal/xfce4-terminal$"))
+                    '((dimensions . (1200 . 410))
+                      (place-mode . centered)
+                      (fixed-positon . t)
+                      (position . north)
+                      (frame-type . top-border)
+                      (never-delete . t)
+                      (cycle-skip . t)
+                      (window-list-skip . t)
+                      (task-list-skip . t)
+                      (animator . none)
+                      (sticky . t)
                       ))
-;; global keybind
-(bind-keys global-keymap "F12"
-           `(jump-or-exec "Terminator" "terminator"
-                          #:match-class t
-                          #:onfocused iconify-window))
-                          ;; #:onfocused (fsh/toggle-window-visible (get-window-by-class my-terminal-wm-class))))
+
+;;*** Tilda
+(add-window-matcher '((WM_CLASS . "^Tilda/tilda$"))
+                    '((dimensions . (1200 . 410))
+                      (place-mode . centered)
+                      (fixed-positon . t)
+                      (position . north)
+                      (frame-type . top-border)
+                      (never-delete . t)
+                      (cycle-skip . t)
+                      (window-list-skip . t)
+                      (task-list-skip . t)
+                      (animator . none)
+                      (sticky . t)
+                      ))
 
 ;;*** auto hide terminal when lose focus TODO
 (defun fsh/hide-terminal-when-lose-focus-hook (win focus-mode)
@@ -592,16 +619,6 @@
          (iconify-window win)))
    (sync-server))
 ;; (add-hook 'focus-out-hook fsh/hide-terminal-when-lose-focus-hook)
-
-;;*** only for Tilda
-(add-window-matcher '((WM_CLASS . "^Tilda/tilda$"))
-                    '((place-mode . centered)
-                      (fixed-positon . t)
-                      (position . north)
-                      (frame-type . top-border)
-                      (never-delete . t)
-                      (sticky . t)
-                      ))
 
 ;;** app runner
 ;; (require 'run-application-ng) ;TODO
