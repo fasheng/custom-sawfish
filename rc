@@ -465,17 +465,14 @@
 (define my-startup-programs
   '(
     ;; ("xloadimage" "-onroot" "-fullscreen" "/home/kid/.desktop")
-    ("compton" "-cC" "-t-3.4" "-l-5" "-r4.2" "-o.55" "-m.90" "--config" "/home/fsh/.compton.conf")
-
     ("xsetroot" "-cursor_name" "left_ptr")
     ("xscreensaver" "-no-splash")
     ("fcitx")
     ("cairo-clock")
     ("tint2")
     ("conky")
-    ("numlockx on")
+    ("numlockx" "on")
     ("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
-    ;; ("tilda")
   ))
 
 (mapc (lambda (program)
