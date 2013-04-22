@@ -562,24 +562,10 @@
                           ;; #:onfocused (fsh/toggle-window-visible (get-window-by-class my-terminal-wm-class))))
            ;; `(jump-or-exec "Tilda" "tilda"
 
-;;*** Terminator
-(add-window-matcher '((WM_CLASS . "^Terminator/terminator$"))
-                    '((dimensions . (1200 . 410))
-                      (place-mode . centered)
-                      (fixed-positon . t)
-                      (position . north)
-                      (frame-type . top-border)
-                      (never-delete . t)
-                      (cycle-skip . t)
-                      (window-list-skip . t)
-                      (task-list-skip . t)
-                      (animator . none)
-                      (sticky . t)
-                      ))
-
 ;;*** xfce4-terminal
 (add-window-matcher '((WM_CLASS . "^Xfce4-terminal/xfce4-terminal$"))
-                    '((dimensions . (1200 . 410))
+                    '(
+                      ;; (dimensions . (1200 . 410))
                       (place-mode . centered)
                       (fixed-positon . t)
                       (position . north)
@@ -591,11 +577,14 @@
                       (animator . none)
                       (sticky . t)
                       ))
+;; test TODO
+;; (remove-window-matcher '((WM_CLASS . "^Xfce4-terminal/xfce4-terminal$"))
+;;                        '(dimensions))
+
 
 ;;*** Tilda
 (add-window-matcher '((WM_CLASS . "^Tilda/tilda$"))
-                    '((dimensions . (1200 . 410))
-                      (place-mode . centered)
+                    '((place-mode . centered)
                       (fixed-positon . t)
                       (position . north)
                       (frame-type . top-border)
