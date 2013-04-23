@@ -197,13 +197,13 @@
 (define apps-keymap (make-keymap))
 (bind-keys global-keymap "W-x" apps-keymap)
 
-(defvar-setq nomatch-text "" "a string that will never match normal text")
+(defvar-setq never-match-text "" "a string that will never match normal text")
 (bind-keys apps-keymap
-  "e"   `(jump-or-exec "Emacs" "emacs-with-im" t #:match-class t)
+  "e"   `(jump-or-exec "Emacs" "emacs_with_im" t #:match-class t)
   "S-e" `(jump-or-exec "Emacs" "emacs" t #:match-class t)
 
   "s"   `(jump-or-exec "smplayer" "smplayer" nil #:match-class t)
-  "S-s" `(jump-or-exec nomatch-text "smplayer" nil #:match-class t)
+  "S-s" `(jump-or-exec never-match-text "smplayer" nil #:match-class t)
   "v"   `(jump-or-exec "Vlc" "vlc" nil #:match-class t)
   "S-v" `(jump-or-exec "VirtualBox" "VirtualBox" nil #:match-class t)
   "m"   `(jump-or-exec "audacious" "audacious" nil #:match-class t)
@@ -213,12 +213,12 @@
 
   "t"   `(jump-or-exec "URxvt" "urxvt" #:match-class t)
                        ;; #:onfocused (show-window (get-window-by-class "Terminator")))
-  "S-t" `(jump-or-exec nomatch-text "urxvt" nil #:match-class t)
+  "S-t" `(jump-or-exec never-match-text "urxvt" nil #:match-class t)
   ;; "f"   `(jump-or-exec "Pcmanfm" "pcmanfm" nil #:match-class t)
   "f"   `(jump-or-exec "Thunar" "thunar" nil #:match-class t)
   "S-f" `(jump-or-exec "Nautilus" "nautilus" nil #:match-class t)
-  "b"   '(jump-or-exec "Chromium" "chromium" nil #:match-class t)
-  "S-b" '(jump-or-exec nomatch-text "chromium" nil #:match-class t)
+  "b"   '(jump-or-exec "Chromium" "chromium_with_shm" nil #:match-class t)
+  "S-b" '(jump-or-exec never-match-text "chromium" nil #:match-class t)
   ;; TODO
   ;; "t" '(xterm)
   ;; "b" '(browser)
@@ -465,6 +465,7 @@
 (define my-startup-programs
   '(
     ;; ("xloadimage" "-onroot" "-fullscreen" "/home/kid/.desktop")
+    ("compton" "-cC" "-t-3.4" "-l-5" "-r4.2" "-o.55" "-m.90" "--config" "/home/fsh/.compton.conf")
     ("xsetroot" "-cursor_name" "left_ptr")
     ("xscreensaver" "-no-splash")
     ("fcitx")
