@@ -210,6 +210,8 @@
   "S-m" `(jump-or-exec "deadbeef" "deadbeef" nil #:match-class t) ;TODO
   "r"   `(jump-or-exec "Liferea" "liferea" nil #:match-class t)
   "i"   `(jump-or-exec "Gthumb" "gthumb" nil #:match-class t)
+  "p"   `(jump-or-exec "Evince" "evince" nil #:match-class t)
+  "S-p" `(jump-or-exec never-match-text "evince" nil #:match-class t)
 
   "t"   `(jump-or-exec "URxvt" "urxvt" #:match-class t)
                        ;; #:onfocused (show-window (get-window-by-class "Terminator")))
