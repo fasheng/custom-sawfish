@@ -199,7 +199,7 @@
 
 (defvar-setq never-match-text "" "a string that will never match normal text")
 (bind-keys apps-keymap
-  "e"   `(jump-or-exec "Emacs" "emacs_with_im" t #:match-class t)
+  "e"   `(jump-or-exec "Emacs" "emacs" t #:match-class t)
   "S-e" `(jump-or-exec "Emacs" "emacs" t #:match-class t)
 
   "s"   `(jump-or-exec "smplayer" "smplayer" nil #:match-class t)
