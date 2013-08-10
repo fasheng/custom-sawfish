@@ -651,10 +651,10 @@
 ;; (require 'wy-describe-key)
 ;; (bind-keys global-keymap "W-c" 'describe-what-am-i-doing)
 
-;;** uptimes
-(require 'uptimes)
-(bind-keys global-keymap "W-C-u" 'uptimes-display-uptime)
-(bind-keys global-keymap "W-C-S-u" 'uptimes-display-uptimes)
+;;** uptimes TODO
+;; (require 'uptimes)
+;; (bind-keys global-keymap "W-C-u" 'uptimes-display-uptime)
+;; (bind-keys global-keymap "W-C-S-u" 'uptimes-display-uptimes)
 
 ;;** shutdown TODO
 ;; (require 'shutdown)
