@@ -173,11 +173,9 @@
            "Pause"   '(system "xscreensaver-command -lock & (sleep 2; xset dpms force off) &")
 
            ;;; **** print screen
-           "Print"   '(jump-or-exec "KSnapshot" "ksnapshot -c")
-           "M-Print" '(system "ksnapshot --fullscreen &")
-           "C-Print" '(system "ksnapshot --region &")
-           ;; "Print"   '(system "import -border window.png &")
-           ;; "C-Print" '(system "import -window root root.png &")
+           "Print"   '(system "scrot ~/desktop.png &")
+           "M-Print" '(system "scrot -bs ~/window.png &")
+           "C-M-Print" '(system "scrot -s ~/rectangle.png &")
 
            ;;; **** other TODO
            ;; "W-F2"    `(jump-or-exec "Gnome-run-dialog" "gnome-run-dialog" t)
