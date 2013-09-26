@@ -22,7 +22,9 @@
 ;;; Code:
 
 
+;;;==================================================================
 ;;; * Basic
+;;;==================================================================
 
 ;; load path
 (setq load-path (cons "~/.sawfish/" load-path))
@@ -83,7 +85,10 @@
 ;; (save-session)
 ;; (sm-save-yourself)
 
+
+;;;==================================================================
 ;;; * Custom functions TODO
+;;;==================================================================
 
 (defun fsh-toggle-window-visible (w)
   (if (window-visible-p w)
@@ -96,7 +101,10 @@
   (make-timer (lambda () (display-message nil)) (or seconds 3)))
 
 
+;;;==================================================================
 ;;; * Look and feel, appearance
+;;;==================================================================
+
 ;;; ** theme
 (custom-set-typed-variable (quote default-frame-style) (quote Yellowcurve-Prion) (quote frame-style))
 
@@ -128,7 +136,11 @@
 ;;; ** transparency
 (require 'native-focus-transparency)
 
+
+;;;==================================================================
 ;;; * Keybinding
+;;;==================================================================
+
 (custom-set-typed-variable 'wm-modifier-value '(super) 'modifier-list)
 
 ;;; ** global keymap
@@ -216,7 +228,11 @@
   "S-b" '(jump-or-exec never-match-text "chromium" nil #:match-class t)
   )
 
+
+;;;==================================================================
 ;;; * Workspace
+;;;==================================================================
+
 (defvar-setq workspace-names '("Master" "Slave" "Playground" "Misc") )
 (defvar-setq workspace-boundary-mode 'wrap-around)
 (defvar-setq workspace-send-boundary-mode 'wrap-around)
@@ -271,7 +287,11 @@
                  (select-workspace workspace-last)
                (display-window window-last))))
 
+
+;;;==================================================================
 ;;; * Viewports TODO
+;;;==================================================================
+
 ;; (defvar-setq viewport-dimensions '(1 . 1))
 ;; (defvar-setq viewport-minimum-dimensions '(1 . 1))
 ;; (defvar-setq uniconify-to-current-viewport t)
@@ -279,7 +299,10 @@
 ;; (defvar-setq scroll-viewport-steps 45)
 
 
+;;;==================================================================
 ;;; * Window
+;;;==================================================================
+
 (defvar-setq decorate-transients t)
 
 ;;; ** cycling
@@ -445,7 +468,11 @@
 ;;; ** number windows TODO not work
 ;; (require 'number-windows)
 
+
+;;;==================================================================
 ;;; * Init and cleanup, startup programs
+;;;==================================================================
+
 (define my-startup-programs
   '(
     ("compton" "-cC" "-t-3.4" "-l-5" "-r4.2" "-o.55" "-m.90" "--config" "/home/fsh/.compton.conf")
@@ -469,7 +496,11 @@
   (mapc kill-process (active-processes)))
 (add-hook 'before-exit-hook 'fsh-cleanup-on-exit 'end)
 
+
+;;;==================================================================
 ;;; * Config for target application
+;;;==================================================================
+
 ;;; ** emacs
 (add-window-matcher '((WM_CLASS . "^Emacs/emacs$"))
                     '((dimensions . (1040 . 580))
@@ -610,7 +641,10 @@
                                        ("C-i" "TAB")
                                        ))))
 
+
+;;;==================================================================
 ;;; * Miscellaneous
+;;;==================================================================
 
 ;;; ** volume control
 (require 'fsh-volume-control-amixer)
