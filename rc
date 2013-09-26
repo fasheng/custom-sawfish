@@ -48,11 +48,6 @@
 (defvar-setq xterm-program "terminal")
 (defvar-setq browser-program "chromium")
 (defvar-setq filemanager-program "nautilus")
-;; screenshot
-;; media player
-;; music player
-
-;;; ** poweroff TODO
 
 ;;; ** key press TODO
 (defvar-setq multi-click-delay 200)
@@ -62,7 +57,7 @@
 (require 'sawfish.wm.session.save)
 (require 'sawfish.wm.session.load)
 
-(defun fsh/save-session ()
+(defun fsh-save-session ()
   ;; (mapc stop-process (active-processes)
   )
 
@@ -73,13 +68,13 @@
 
 ;;; * Custom functions TODO
 
-(defun fsh/toggle-window-visible (w)
+(defun fsh-toggle-window-visible (w)
   (if (window-visible-p w)
       (hide-window w)
     (show-window w)))
 
-;;; ** fsh/display-message
-(defun fsh/display-message (message #!optional seconds)
+;;; ** fsh-display-message
+(defun fsh-display-message (message #!optional seconds)
   (display-message message)
   (make-timer (lambda () (display-message nil)) (or seconds 3)))
 
@@ -246,7 +241,7 @@
 
 ;; TODO timeout 0.5, show message on top
 (define (display-workspace-name)
-  (fsh/display-message
+  (fsh-display-message
    (format nil "Now on Workspace: %s"
            (or (nth current-workspace workspace-names)
                (format nil (_ "Workspace %d") (1+ current-workspace))))
@@ -333,7 +328,7 @@
 
 ;;; *** move window manually
 (require 'animate-move)
-(defun fsh/move-window (dir inc #!optional edge no-focus)
+(defun fsh-move-window (dir inc #!optional edge no-focus)
   "Move focused window 'left, 'right, 'up or 'down."
   (interactive)
   (let* ((win (input-focus))
@@ -362,20 +357,20 @@
     (unless no-focus
       (display-window win))))
 
-(bind-keys global-keymap "W-M-h"   '(fsh/move-window 'left 30))
-(bind-keys global-keymap "W-M-l"   '(fsh/move-window 'right 30))
-(bind-keys global-keymap "W-M-j"   '(fsh/move-window 'down 30))
-(bind-keys global-keymap "W-M-k"   '(fsh/move-window 'up 30))
+(bind-keys global-keymap "W-M-h"   '(fsh-move-window 'left 30))
+(bind-keys global-keymap "W-M-l"   '(fsh-move-window 'right 30))
+(bind-keys global-keymap "W-M-j"   '(fsh-move-window 'down 30))
+(bind-keys global-keymap "W-M-k"   '(fsh-move-window 'up 30))
 
-(bind-keys global-keymap "W-M-S-h" '(fsh/move-window 'left 5))
-(bind-keys global-keymap "W-M-S-l" '(fsh/move-window 'right 5))
-(bind-keys global-keymap "W-M-S-j" '(fsh/move-window 'down 5))
-(bind-keys global-keymap "W-M-S-k" '(fsh/move-window 'up 5))
+(bind-keys global-keymap "W-M-S-h" '(fsh-move-window 'left 5))
+(bind-keys global-keymap "W-M-S-l" '(fsh-move-window 'right 5))
+(bind-keys global-keymap "W-M-S-j" '(fsh-move-window 'down 5))
+(bind-keys global-keymap "W-M-S-k" '(fsh-move-window 'up 5))
 
-(bind-keys global-keymap "W-M-Left" '(fsh/move-window 'left 0 'edge))
-(bind-keys global-keymap "W-M-Right" '(fsh/move-window 'right 0 'edge))
-(bind-keys global-keymap "W-M-Down" '(fsh/move-window 'down 0 'edge))
-(bind-keys global-keymap "W-M-Up" '(fsh/move-window 'up 0 'edge))
+(bind-keys global-keymap "W-M-Left" '(fsh-move-window 'left 0 'edge))
+(bind-keys global-keymap "W-M-Right" '(fsh-move-window 'right 0 'edge))
+(bind-keys global-keymap "W-M-Down" '(fsh-move-window 'down 0 'edge))
+(bind-keys global-keymap "W-M-Up" '(fsh-move-window 'up 0 'edge))
 
 ;;; *** no-mouse
 (defvar-setq rsk-panel-height 0)
@@ -418,14 +413,14 @@
 ;;; ** window matcher, action for special windows
 
 ;;; *** test window matcher
-(define-match-window-setter 'fsh/test
+(define-match-window-setter 'fsh-test
   (lambda (w prop value)
     (declare (unused prop))
     (display-message (format nil "Volume: %s %s" (car value) (cdr value)))
     ))
 
 ;;; *** set transparency TODO
-;; (define-match-window-setter 'fsh/matcher-transparency
+;; (define-match-window-setter 'fsh-matcher-transparency
 ;;   (lambda (w prop value)
 ;;     (declare (unused prop))
 ;;     (set-x-property w '_NET_WM_WINDOW_OPACITY (make-vector 1 value) 'CARDINAL 32)
@@ -480,11 +475,11 @@
         (apply start-process (make-process standard-output) program))
       my-startup-programs)
 
-(defun fsh/cleanup-on-exit ()
+(defun fsh-cleanup-on-exit ()
   ;; kill manually TODO
   ;; (system "killall -- xcompmgr xscreensaver ibus-daemon")
   (mapc kill-process (active-processes)))
-(add-hook 'before-exit-hook 'fsh/cleanup-on-exit 'end)
+(add-hook 'before-exit-hook 'fsh-cleanup-on-exit 'end)
 
 ;;; * Config for target application
 ;;; ** emacs
@@ -563,7 +558,7 @@
            "W-TAB" `(jump-or-exec "Xfce4-terminal" "xfce4-terminal"
                                 #:match-class t
                                 #:onfocused iconify-window))
-                          ;; #:onfocused (fsh/toggle-window-visible (get-window-by-class my-terminal-wm-class))))
+                          ;; #:onfocused (fsh-toggle-window-visible (get-window-by-class my-terminal-wm-class))))
            ;; `(jump-or-exec "Tilda" "tilda"
 
 ;;; *** xfce4-terminal
@@ -601,14 +596,14 @@
                       ))
 
 ;;; *** auto hide terminal when lose focus TODO
-(defun fsh/hide-terminal-when-lose-focus-hook (win focus-mode)
+(defun fsh-hide-terminal-when-lose-focus-hook (win focus-mode)
   "Makes the window that went out-of-focus, dim"
    (let ((w_id (window-frame-id win))
          (tw_id (window-frame-id (get-window-by-class my-terminal-wm-class))))
      (if (= w_id tw_id)
          (iconify-window win)))
    (sync-server))
-;; (add-hook 'focus-out-hook fsh/hide-terminal-when-lose-focus-hook)
+;; (add-hook 'focus-out-hook fsh-hide-terminal-when-lose-focus-hook)
 
 ;;; ** app runner
 ;; (require 'run-application-ng) ;TODO
@@ -617,8 +612,8 @@
 (bind-keys global-keymap "M-F2"
            `(jump-or-exec "Xfce4-appfinder" "xfce4-appfinder -c" #:match-class t
                             #:onfocused iconify-window))
-                            ;; #:onfocused fsh/toggle-window-visible))
-                          ;; #:onfocused (fsh/toggle-window-visible (get-window-by-class "Xfce4-appfinder"))))
+                            ;; #:onfocused fsh-toggle-window-visible))
+                          ;; #:onfocused (fsh-toggle-window-visible (get-window-by-class "Xfce4-appfinder"))))
 (add-window-matcher '((WM_CLASS . "^Xfce4-appfinder/xfce4-appfinder$"))
                     '((animator . none)))
 
@@ -639,14 +634,14 @@
                          "Super-0" 'audio-toggle-mute)
 
 
-;;; ** fsh/describe-key TODO
-;; (defun fsh/describe-key ()
+;;; ** fsh-describe-key TODO
+;; (defun fsh-describe-key ()
 ;;   (interactive)
 ;;   (require 'keymap)
-;;   (fsh/display-message (concat "You input \""
+;;   (fsh-display-message (concat "You input \""
 ;;                                (event-name (read-event "Please input the key: "))
 ;;                                "\"")))
-;; (bind-keys global-keymap "W-c" 'fsh/describe-key)
+;; (bind-keys global-keymap "W-c" 'fsh-describe-key)
 
 ;;; ** wy-describe-key TODO
 ;; (require 'wy-describe-key)
