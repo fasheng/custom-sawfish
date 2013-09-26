@@ -1,5 +1,26 @@
-;; Personal Sawfish configuration file
-;; 2012-10-10
+;;; rc ---
+;;
+;; Author: Xu FaSheng <fasheng.xu@gmail.com>
+;;
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;; Code:
+
 
 ;;; * Basic
 
@@ -38,11 +59,7 @@
 (defvar-setq error-handler-beep nil)
 (defvar-setq error-destination 'both)
 
-;;; ** hot-spot
-;; (defvar-setq hot-spots-enable t)
-;; (defvar-setq hot-spot-delay 150)
-;; (defvar-setq hot-spots-area 50)
-
+;;; ** hot-spot TODO
 
 ;;; ** config defualt xterm, filemanager and browser
 (defvar-setq xterm-program "terminal")
@@ -57,9 +74,9 @@
 (require 'sawfish.wm.session.save)
 (require 'sawfish.wm.session.load)
 
-(defun fsh-save-session ()
-  ;; (mapc stop-process (active-processes)
-  )
+;; (defun fsh-save-session ()
+;;   ;; (mapc stop-process (active-processes)
+;;   )
 
 ;; (add-hook 'before-exit-hook 'save-session)
 ;; (add-hook 'after-initialization-hook 'load-session 'end)
@@ -81,7 +98,6 @@
 
 ;;; * Look and feel, appearance
 ;;; ** theme
-;; (custom-set-typed-variable (quote default-frame-style) (quote Bluecurve-Prion) (quote frame-style))
 (custom-set-typed-variable (quote default-frame-style) (quote Yellowcurve-Prion) (quote frame-style))
 
 ;;; ** font
@@ -106,7 +122,7 @@
 (defvar-setq root-wallpaper "~/.wallpapers/Ariya/contents/images/1280x800.png")
 (defvar-setq wallpaper-setter "hsetroot")
 (defvar-setq wallpaper-setter-args "-center")
-;; set wallpaper manual
+;; set wallpaper manually
 (system "hsetroot -full ~/.wallpapers/Ariya/contents/images/1280x800.png &")
 
 ;;; ** transparency
@@ -137,7 +153,6 @@
            "W-C-d"   'toggle-desktop    ;TODO
            "W-h"     'previous-workspace
            "W-l"     'next-workspace
-           ;; TODO
            "W-S-h"   'send-to-previous-workspace
            "W-S-l"   'send-to-next-workspace
            "W-F1"    '(activate-workspace 1)
@@ -157,9 +172,7 @@
            "W-S-d"  '(send-to-workspace 3)
            "W-S-f"  '(send-to-workspace 4)
 
-           ;;; *** action
-           ;; "F1"      '(system "true &") ;TODO
-           "W-C-c"  '(system "sawfish-config &")
+           ;;; *** sawfish action
            "W-C-e"  'display-errors
            "W-e"    '(display-message nil) ;erase displayed message
 
@@ -173,17 +186,6 @@
            "C-M-Print" '(system "scrot -s ~/rectangle.png &")
 
            ;;; **** other TODO
-           ;; "W-F2"    `(jump-or-exec "Gnome-run-dialog" "gnome-run-dialog" t)
-           ;; "W-F6"    `(jump-or-exec "Geeqie" "geeqie" nil)
-           ;; "W-F7"    `(jump-or-exec "Iceweasel" "iceweasel" t)
-           ;; "W-F8"    `(jump-or-exec "Exaile" "exaile" t)
-           ;; "W-F9"    `(jump-or-exec "Synaptic" "gksu -u root synaptic" nil)
-           ;; "W-F10"   `(jump-or-exec "Geany" "geany" t)
-           ;; "W-F11"   `(jump-or-exec "Glade-3" "glade-3" t)
-           ;; "Home"    `(jump-or-exec "Nautilus" "nautilus --no-desktop ~" t)
-           ;; "C-W-t"   '(system "eject -T /dev/scd0 &")
-           ;; "C-W-x"   '(system "xkill &")
-
            )
 
 ;;; ** Application Keymacros
@@ -207,19 +209,11 @@
   "S-p" `(jump-or-exec never-match-text "evince" nil #:match-class t)
 
   "t"   `(jump-or-exec "URxvt" "urxvt" #:match-class t)
-                       ;; #:onfocused (show-window (get-window-by-class "Terminator")))
   "S-t" `(jump-or-exec never-match-text "urxvt" nil #:match-class t)
-  ;; "f"   `(jump-or-exec "Pcmanfm" "pcmanfm" nil #:match-class t)
   "f"   `(jump-or-exec "Thunar" "thunar" nil #:match-class t)
   "S-f" `(jump-or-exec "Nautilus" "nautilus" nil #:match-class t)
   "b"   '(jump-or-exec "Chromium" "chromium_with_shm" nil #:match-class t)
   "S-b" '(jump-or-exec never-match-text "chromium" nil #:match-class t)
-  ;; TODO
-  ;; "t" '(xterm)
-  ;; "b" '(browser)
-  ;; "t" `(jump-or-exec "Flush" "flush" nil)
-  ;; "z" '( system "gksu -u root /etc/init.d/network-manager restart &" )
-  ;; "u" '( system "gksu -u root /etc/init.d/privoxy restart &" )
   )
 
 ;;; * Workspace
@@ -336,18 +330,13 @@
          (dim (window-frame-dimensions win))
          (endx (car pos))
          (endy (cdr pos)))
-    (cond ((eq dir 'left) (setq endx
-                                (if edge
-                                    0
-                                  (- endx inc))))
+    (cond ((eq dir 'left) (setq endx (if edge 0 (- endx inc))))
           ((eq dir 'right) (setq endx
                                 (if edge
                                     (- (screen-width) (car dim))
                                   (+ endx inc))))
           ((eq dir 'up) (setq endy
-                              (if edge
-                                  0
-                                (- endy inc))))
+                              (if edge 0 (- endy inc))))
           ((eq dir 'down) (setq endy
                               (if edge
                                   (- (screen-height) (cdr dim))
@@ -459,7 +448,6 @@
 ;;; * Init and cleanup, startup programs
 (define my-startup-programs
   '(
-    ;; ("xloadimage" "-onroot" "-fullscreen" "/home/kid/.desktop")
     ("compton" "-cC" "-t-3.4" "-l-5" "-r4.2" "-o.55" "-m.90" "--config" "/home/fsh/.compton.conf")
     ("xsetroot" "-cursor_name" "left_ptr")
     ("xscreensaver" "-no-splash")
@@ -558,13 +546,12 @@
            "W-TAB" `(jump-or-exec "Xfce4-terminal" "xfce4-terminal"
                                 #:match-class t
                                 #:onfocused iconify-window))
-                          ;; #:onfocused (fsh-toggle-window-visible (get-window-by-class my-terminal-wm-class))))
-           ;; `(jump-or-exec "Tilda" "tilda"
+;; TODO
+;; #:onfocused (fsh-toggle-window-visible (get-window-by-class my-terminal-wm-class))))
 
 ;;; *** xfce4-terminal
 (add-window-matcher '((WM_CLASS . "^Xfce4-terminal/xfce4-terminal$"))
                     '(
-                      ;; (dimensions . (1200 . 410))
                       (place-mode . centered)
                       (fixed-positon . t)
                       (position . north)
@@ -605,15 +592,13 @@
    (sync-server))
 ;; (add-hook 'focus-out-hook fsh-hide-terminal-when-lose-focus-hook)
 
-;;; ** app runner
-;; (require 'run-application-ng) ;TODO
+;;; ** app runner TODO
+;; (require 'run-application-ng)
 ;; (bind-keys global-keymap "W-r"    'run-application)
 
 (bind-keys global-keymap "M-F2"
            `(jump-or-exec "Xfce4-appfinder" "xfce4-appfinder -c" #:match-class t
                             #:onfocused iconify-window))
-                            ;; #:onfocused fsh-toggle-window-visible))
-                          ;; #:onfocused (fsh-toggle-window-visible (get-window-by-class "Xfce4-appfinder"))))
 (add-window-matcher '((WM_CLASS . "^Xfce4-appfinder/xfce4-appfinder$"))
                     '((animator . none)))
 
@@ -687,3 +672,6 @@
 ;;                         (sticky . t)
 ;;                         (sticky-viewport . t)
 ;;                         (avoid . ())))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; rc ends here
