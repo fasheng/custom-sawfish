@@ -472,8 +472,9 @@
 
 ;;; *** emacs
 (add-window-matcher '((WM_CLASS . "^Emacs/emacs$"))
-                    '((dimensions . (1040 . 580))
-                      (place-mode . centered)
+                    '(
+                      (dimensions . (800 . 600))
+                      (position . center)
                       (fixed-positon . t)
                       (never-delete . t)
                       (workspace . 1)))
