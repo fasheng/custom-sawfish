@@ -422,6 +422,25 @@
 ;; (require 'cabinet)
 ;; (bind-keys global-keymap "W-S-w" 'cabinet-switch)
 
+;;; ** window snooper
+(require 'window-snooper)
+(bind-keys global-keymap "C-W-s" 'window-snooper)
+
+;;; ** window focus
+(require 'focus-by-direction)
+(bind-keys window-keymap "W-S-Up"    'focus-north)
+(bind-keys window-keymap "W-S-Left"  'focus-west)
+(bind-keys window-keymap "W-S-Right" 'focus-east)
+(bind-keys window-keymap "W-S-Down"  'focus-south)
+
+;;; ** undo
+(require 'undo)
+(bind-keys global-keymap "W-/"    'undo)
+(bind-keys global-keymap "W-?"    'undo-redo)
+
+;;; ** number windows TODO not work
+;; (require 'number-windows)
+
 ;;; ** window matcher, action for special windows
 
 ;;; *** test window matcher
@@ -449,24 +468,147 @@
 ;; (sync-server)
 
 
-;;; ** window snooper
-(require 'window-snooper)
-(bind-keys global-keymap "C-W-s" 'window-snooper)
+;;; ** config for target application
 
-;;; ** window focus
-(require 'focus-by-direction)
-(bind-keys window-keymap "W-S-Up"    'focus-north)
-(bind-keys window-keymap "W-S-Left"  'focus-west)
-(bind-keys window-keymap "W-S-Right" 'focus-east)
-(bind-keys window-keymap "W-S-Down"  'focus-south)
+;;; *** emacs
+(add-window-matcher '((WM_CLASS . "^Emacs/emacs$"))
+                    '((dimensions . (1040 . 580))
+                      (place-mode . centered)
+                      (fixed-positon . t)
+                      (never-delete . t)
+                      (workspace . 1)))
 
-;;; ** undo
-(require 'undo)
-(bind-keys global-keymap "W-/"    'undo)
-(bind-keys global-keymap "W-?"    'undo-redo)
+;;; *** chromium
+(add-window-matcher '((WM_CLASS . "^Chromium/chromium$"))
+                    '((workspace . 1)))
 
-;;; ** number windows TODO not work
-;; (require 'number-windows)
+;;; *** vlc
+(add-window-matcher '((WM_CLASS . "^Vlc/vlc$"))
+                    '((workspace . 3)))
+
+;;; *** deadbeef
+(add-window-matcher '((WM_CLASS . "^Deadbeef/deadbeef$"))
+                    '((workspace . 3)))
+
+;;; *** audacious
+(add-window-matcher '((WM_CLASS . "^Audacious/audacious$"))
+                    '((workspace . 3)))
+
+;;; *** liferea
+(add-window-matcher '((WM_CLASS . "^Liferea/liferea$"))
+                    '((workspace . 3)))
+;;; *** virtualbox
+(add-window-matcher '((WM_CLASS . "VirtualBox"))
+                    '((workspace . 2)))
+
+;;; *** ark
+(add-window-matcher '((WM_CLASS . "^Ark/ark$"))
+                    '((dimensions . (800 . 600))))
+
+;;; *** cairo-clock
+(add-window-matcher '((WM_CLASS . "Cairo-clock"))
+                    '((dimensions . (360 . 360))
+                      (position . north-west)
+                      (never-delete . t)
+                      (cycle-skip . t)
+                      (window-list-skip . t)
+                      (task-list-skip . t)
+                      (animator . none)
+                      (sticky . t)
+                      (never-focus . t)
+                      (depth . -1)
+                      ))
+
+;;; *** conky
+(add-window-matcher '((WM_CLASS . "Conky"))
+                    '((never-focus . t)
+                      (never-iconify . t)
+                      ))
+
+;;; *** tint2
+(add-window-matcher '((WM_CLASS . "Tint2"))
+                    '((never-focus . t)
+                      ))
+
+;;; *** deluge
+(add-window-matcher '((WM_CLASS . "Deluge"))
+                    '((workspace . 2)))
+
+;;; *** mock a quake style console TODO
+(defvar-setq my-terminal-name "xfce4-terminal")
+(defvar-setq my-terminal-wm-class "Xfce4-terminal")
+
+;; global keybind
+(bind-keys global-keymap
+           "F12" `(jump-or-exec "Xfce4-terminal" "xfce4-terminal"
+                                #:match-class t
+                                #:onfocused iconify-window)
+           "W-TAB" `(jump-or-exec "Xfce4-terminal" "xfce4-terminal"
+                                #:match-class t
+                                #:onfocused iconify-window))
+;; TODO
+;; #:onfocused (fsh-toggle-window-visible (get-window-by-class my-terminal-wm-class))))
+
+;;; **** xfce4-terminal
+(add-window-matcher '((WM_CLASS . "^Xfce4-terminal/xfce4-terminal$"))
+                    '(
+                      (place-mode . centered)
+                      (fixed-positon . t)
+                      (position . north)
+                      (frame-type . top-border)
+                      (never-delete . t)
+                      (cycle-skip . t)
+                      (window-list-skip . t)
+                      (task-list-skip . t)
+                      (animator . none)
+                      (sticky . t)
+                      ))
+;; test TODO
+;; (remove-window-matcher '((WM_CLASS . "^Xfce4-terminal/xfce4-terminal$"))
+;;                        '(dimensions))
+
+
+;;; **** Tilda
+(add-window-matcher '((WM_CLASS . "^Tilda/tilda$"))
+                    '((place-mode . centered)
+                      (fixed-positon . t)
+                      (position . north)
+                      (frame-type . top-border)
+                      (never-delete . t)
+                      (cycle-skip . t)
+                      (window-list-skip . t)
+                      (task-list-skip . t)
+                      (animator . none)
+                      (sticky . t)
+                      ))
+
+;;; **** auto hide terminal when lose focus TODO
+(defun fsh-hide-terminal-when-lose-focus-hook (win focus-mode)
+  "Makes the window that went out-of-focus, dim"
+   (let ((w_id (window-frame-id win))
+         (tw_id (window-frame-id (get-window-by-class my-terminal-wm-class))))
+     (if (= w_id tw_id)
+         (iconify-window win)))
+   (sync-server))
+;; (add-hook 'focus-out-hook fsh-hide-terminal-when-lose-focus-hook)
+
+;;; *** app runner TODO
+;; (require 'run-application-ng)
+;; (bind-keys global-keymap "W-r"    'run-application)
+
+(bind-keys global-keymap "M-F2"
+           `(jump-or-exec "Xfce4-appfinder" "xfce4-appfinder -c" #:match-class t
+                            #:onfocused iconify-window))
+(add-window-matcher '((WM_CLASS . "^Xfce4-appfinder/xfce4-appfinder$"))
+                    '((animator . none)))
+
+;;; **** emacs style keybindings
+(add-window-matcher '((WM_CLASS . "xfce4-appfinder"))
+                    '((keymap-trans . (("C-p" "Up") ("C-n" "Down")
+                                       ("C-f" "Right") ("C-b" "Left")
+                                       ("C-j" "Return") ("C-g" "Esc")
+                                       ("C-i" "TAB")
+                                       ))))
 
 
 ;;;==================================================================
@@ -496,151 +638,6 @@
   ;; (system "killall -- xcompmgr xscreensaver ibus-daemon")
   (mapc kill-process (active-processes)))
 (add-hook 'before-exit-hook 'fsh-cleanup-on-exit 'end)
-
-
-;;;==================================================================
-;;; * Config for target application
-;;;==================================================================
-
-;;; ** emacs
-(add-window-matcher '((WM_CLASS . "^Emacs/emacs$"))
-                    '((dimensions . (1040 . 580))
-                      (place-mode . centered)
-                      (fixed-positon . t)
-                      (never-delete . t)
-                      (workspace . 1)))
-
-;;; ** chromium
-(add-window-matcher '((WM_CLASS . "^Chromium/chromium$"))
-                    '((workspace . 1)))
-
-;;; ** vlc
-(add-window-matcher '((WM_CLASS . "^Vlc/vlc$"))
-                    '((workspace . 3)))
-
-;;; ** deadbeef
-(add-window-matcher '((WM_CLASS . "^Deadbeef/deadbeef$"))
-                    '((workspace . 3)))
-
-;;; ** audacious
-(add-window-matcher '((WM_CLASS . "^Audacious/audacious$"))
-                    '((workspace . 3)))
-
-;;; ** liferea
-(add-window-matcher '((WM_CLASS . "^Liferea/liferea$"))
-                    '((workspace . 3)))
-;;; ** virtualbox
-(add-window-matcher '((WM_CLASS . "VirtualBox"))
-                    '((workspace . 2)))
-
-;;; ** ark
-(add-window-matcher '((WM_CLASS . "^Ark/ark$"))
-                    '((dimensions . (800 . 600))))
-
-;;; ** cairo-clock
-(add-window-matcher '((WM_CLASS . "Cairo-clock"))
-                    '((dimensions . (360 . 360))
-                      (position . north-west)
-                      (never-delete . t)
-                      (cycle-skip . t)
-                      (window-list-skip . t)
-                      (task-list-skip . t)
-                      (animator . none)
-                      (sticky . t)
-                      (never-focus . t)
-                      (depth . -1)
-                      ))
-
-;;; ** conky
-(add-window-matcher '((WM_CLASS . "Conky"))
-                    '((never-focus . t)
-                      (never-iconify . t)
-                      ))
-
-;;; ** tint2
-(add-window-matcher '((WM_CLASS . "Tint2"))
-                    '((never-focus . t)
-                      ))
-
-;;; ** deluge
-(add-window-matcher '((WM_CLASS . "Deluge"))
-                    '((workspace . 2)))
-
-;;; ** mock a quake style console TODO
-(defvar-setq my-terminal-name "xfce4-terminal")
-(defvar-setq my-terminal-wm-class "Xfce4-terminal")
-
-;; global keybind
-(bind-keys global-keymap
-           "F12" `(jump-or-exec "Xfce4-terminal" "xfce4-terminal"
-                                #:match-class t
-                                #:onfocused iconify-window)
-           "W-TAB" `(jump-or-exec "Xfce4-terminal" "xfce4-terminal"
-                                #:match-class t
-                                #:onfocused iconify-window))
-;; TODO
-;; #:onfocused (fsh-toggle-window-visible (get-window-by-class my-terminal-wm-class))))
-
-;;; *** xfce4-terminal
-(add-window-matcher '((WM_CLASS . "^Xfce4-terminal/xfce4-terminal$"))
-                    '(
-                      (place-mode . centered)
-                      (fixed-positon . t)
-                      (position . north)
-                      (frame-type . top-border)
-                      (never-delete . t)
-                      (cycle-skip . t)
-                      (window-list-skip . t)
-                      (task-list-skip . t)
-                      (animator . none)
-                      (sticky . t)
-                      ))
-;; test TODO
-;; (remove-window-matcher '((WM_CLASS . "^Xfce4-terminal/xfce4-terminal$"))
-;;                        '(dimensions))
-
-
-;;; *** Tilda
-(add-window-matcher '((WM_CLASS . "^Tilda/tilda$"))
-                    '((place-mode . centered)
-                      (fixed-positon . t)
-                      (position . north)
-                      (frame-type . top-border)
-                      (never-delete . t)
-                      (cycle-skip . t)
-                      (window-list-skip . t)
-                      (task-list-skip . t)
-                      (animator . none)
-                      (sticky . t)
-                      ))
-
-;;; *** auto hide terminal when lose focus TODO
-(defun fsh-hide-terminal-when-lose-focus-hook (win focus-mode)
-  "Makes the window that went out-of-focus, dim"
-   (let ((w_id (window-frame-id win))
-         (tw_id (window-frame-id (get-window-by-class my-terminal-wm-class))))
-     (if (= w_id tw_id)
-         (iconify-window win)))
-   (sync-server))
-;; (add-hook 'focus-out-hook fsh-hide-terminal-when-lose-focus-hook)
-
-;;; ** app runner TODO
-;; (require 'run-application-ng)
-;; (bind-keys global-keymap "W-r"    'run-application)
-
-(bind-keys global-keymap "M-F2"
-           `(jump-or-exec "Xfce4-appfinder" "xfce4-appfinder -c" #:match-class t
-                            #:onfocused iconify-window))
-(add-window-matcher '((WM_CLASS . "^Xfce4-appfinder/xfce4-appfinder$"))
-                    '((animator . none)))
-
-;;; *** emacs style keybindings
-(add-window-matcher '((WM_CLASS . "xfce4-appfinder"))
-                    '((keymap-trans . (("C-p" "Up") ("C-n" "Down")
-                                       ("C-f" "Right") ("C-b" "Left")
-                                       ("C-j" "Return") ("C-g" "Esc")
-                                       ("C-i" "TAB")
-                                       ))))
 
 
 ;;;==================================================================
