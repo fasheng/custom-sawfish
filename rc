@@ -475,6 +475,7 @@
 
 (define my-startup-programs
   '(
+    ("xmodmap" "/home/fsh/.xmodmap")
     ("compton" "-cC" "-t-3.4" "-l-5" "-r4.2" "-o.55" "-m.90" "--config" "/home/fsh/.compton.conf")
     ("xsetroot" "-cursor_name" "left_ptr")
     ("xscreensaver" "-no-splash")
