@@ -133,8 +133,8 @@
 ;; set wallpaper manually
 (system "hsetroot -full ~/.wallpapers/Ariya/contents/images/1280x800.png &")
 
-;;; ** transparency
-(require 'native-focus-transparency)
+;;; ** TODO transparency
+;; (require 'native-focus-transparency)
 
 
 ;;;==================================================================
