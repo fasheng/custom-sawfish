@@ -150,10 +150,9 @@
            "M-ISO_Left_Tab" 'cycle-windows-backwards
            "W-j"     'next-workspace-window
            "W-k"     'previous-workspace-window
-           "W-S-k"   'maximize-fill-window-toggle ;TODO
            "W-z"     'toggle-window-iconified
            "W-S-z"   'iconify-workspace-windows
-           "W-m"     'maximize-fill-window-toggle
+           "W-m"     'maximize-window-toggle
            "W-S-m"   'maximize-window-fullscreen-toggle
 
            ;;; *** menu
@@ -304,6 +303,7 @@
 ;;;==================================================================
 
 (defvar-setq decorate-transients t)
+;; (defvar-setq maximize-ignore-when-filling t)
 
 ;;; ** cycling
 (define-special-variable cycle-all-workspaces nil)
@@ -619,7 +619,8 @@
 (define my-startup-programs
   '(
     ("xmodmap" "/home/fsh/.xmodmap")
-    ("compton" "-cC" "-t-3.4" "-l-5" "-r4.2" "-o.55" "-m.90" "--config" "/home/fsh/.compton.conf")
+    ;; ("compton" "-cC" "-t-3.4" "-l-5" "-r4.2" "-o.55" "-m.90" "--config" "/home/fsh/.compton.conf")
+    ("compton" "--config" "/home/fsh/.compton.conf")
     ("xsetroot" "-cursor_name" "left_ptr")
     ("xscreensaver" "-no-splash")
     ("fcitx")
