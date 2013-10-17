@@ -189,7 +189,7 @@
 
            ;;; **** screensaver
            "W-;"     '(system "(sleep 0.5; xset dpms force off) &")
-           "Pause"   '(system "xscreensaver-command -lock & (sleep 2; xset dpms force off) &")
+           "Pause"   '(system "xscreensaver-command -lock & (sleep 1; xset dpms force off) &")
 
            ;;; **** print screen
            "Print"   '(system "scrot ~/desktop.png &")
