@@ -106,7 +106,8 @@
 ;;;==================================================================
 
 ;;; ** theme
-(custom-set-typed-variable (quote default-frame-style) (quote Yellowcurve-Prion) (quote frame-style))
+;; (custom-set-typed-variable (quote default-frame-style) (quote Yellowcurve-Prion) (quote frame-style))
+(custom-set-typed-variable (quote default-frame-style) (quote Bluecurve-Prion) (quote frame-style))
 
 ;;; ** font
 (custom-set-typed-variable 'default-font '("Pango" . "WenQuanYi Zen Hei Medium 11") 'font)
@@ -192,9 +193,9 @@
            "Pause"   '(system "xscreensaver-command -lock & (sleep 1; xset dpms force off) &")
 
            ;;; **** print screen
-           "Print"   '(system "scrot ~/desktop.png &")
-           "M-Print" '(system "scrot -bs ~/window.png &")
-           "C-M-Print" '(system "scrot -s ~/rectangle.png &")
+           "Print"   '(system "scrot ~/desktop_$(date +%F_%R).png &")
+           "M-Print" '(system "scrot -bs ~/window_$(date +%F_%R).png &")
+           "C-M-Print" '(system "scrot -s ~/rectangle_$(date +%F_%R).png &")
 
            ;;; **** other TODO
            )
@@ -318,7 +319,7 @@
 (bind-keys window-keymap
            "M-F4"     'delete-window-safely
            "M-S-F4"   'destroy-window
-           "W-p"      'toggle-window-shaded
+           ;; "W-p"      'toggle-window-shaded
            )
 
 ;;; ** window history
