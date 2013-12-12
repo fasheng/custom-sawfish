@@ -537,19 +537,33 @@
                     '((workspace . 2)))
 
 ;;;** mock a quake style console TODO
-(defvar-setq my-terminal-name "xfce4-terminal")
-(defvar-setq my-terminal-wm-class "Xfce4-terminal")
+;; (defvar-setq my-terminal-name "xfce4-terminal")
+;; (defvar-setq my-terminal-wm-class "Xfce4-terminal")
 
 ;; global keybind
 (bind-keys global-keymap
-           "F12" `(jump-or-exec "Xfce4-terminal" "xfce4-terminal"
+           "F12" '(jump-or-exec "Deepin-terminal" "deepin-terminal"
                                 #:match-class t
                                 #:onfocused iconify-window)
-           "W-TAB" `(jump-or-exec "Xfce4-terminal" "xfce4-terminal"
+           "W-TAB" '(jump-or-exec "Deepin-terminal" "deepin-terminal"
                                 #:match-class t
                                 #:onfocused iconify-window))
 ;; TODO
 ;; #:onfocused (fsh-toggle-window-visible (get-window-by-class my-terminal-wm-class))))
+
+;;;*** deepin-terminal
+(add-window-matcher '((WM_CLASS . "^Deepin-terminal/deepin-terminal$"))
+                    '(
+                      (place-mode . centered)
+                      (fixed-positon . t)
+                      (position . north)
+                      (never-delete . t)
+                      (cycle-skip . t)
+                      (window-list-skip . t)
+                      (task-list-skip . t)
+                      (animator . none)
+                      (sticky . t)
+                      ))
 
 ;;;*** xfce4-terminal
 (add-window-matcher '((WM_CLASS . "^Xfce4-terminal/xfce4-terminal$"))
