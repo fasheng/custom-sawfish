@@ -213,8 +213,10 @@
   "S-s" `(jump-or-exec never-match-text "smplayer" nil #:match-class t)
   "v"   `(jump-or-exec "Vlc" "vlc" nil #:match-class t)
   "S-v" `(jump-or-exec "VirtualBox" "VirtualBox" nil #:match-class t)
-  "m"   `(jump-or-exec "audacious" "audacious" nil #:match-class t)
-  "S-m" `(jump-or-exec "deadbeef" "deadbeef" nil #:match-class t) ;TODO
+  ;; "m"   `(jump-or-exec "audacious" "audacious" nil #:match-class t)
+  ;; "S-m" `(jump-or-exec "deadbeef" "deadbeef" nil #:match-class t) ;TODO
+  "m"   `(jump-or-exec "deepin-music-player" "deepin-music-player" nil #:match-class t)
+  "S-m" `(jump-or-exec "deepin-media-player" "deepin-media-player" nil #:match-class t)
   "r"   `(jump-or-exec "Liferea" "liferea" nil #:match-class t)
   "i"   `(jump-or-exec "Gthumb" "gthumb" nil #:match-class t)
   "p"   `(jump-or-exec "Evince" "evince" nil #:match-class t)
@@ -494,6 +496,14 @@
 
 ;;;** audacious
 (add-window-matcher '((WM_CLASS . "^Audacious/audacious$"))
+                    '((workspace . 3)))
+
+;;;** deepinn music player
+(add-window-matcher '((WM_CLASS . "^Deepin-music-player/deepin-music-player$"))
+                    '((workspace . 3)))
+
+;;;** deepin media player
+(add-window-matcher '((WM_CLASS . "^Deepin-media-player/deepin-media-player$"))
                     '((workspace . 3)))
 
 ;;;** liferea
