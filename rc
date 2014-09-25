@@ -419,13 +419,11 @@
 ;; (bind-keys window-keymap "W-S-t" 'tab-release-window)
 
 
-;;;** iswitch window
-(require 'iswitch-window)
-(bind-keys global-keymap "W-w" 'iswitch-window)
 
-;;;** cabinet, extension for iswitch, TODO fix the keybindings
-;(require 'cabinet)
-;(bind-keys global-keymap "W-S-w" 'cabinet-switch)
+;;;** cabinet, extension for iswitch
+(unbind-keys global-keymap "Super-Tab")
+(unbind-keys global-keymap "C-Tab")
+(bind-keys global-keymap "W-w" 'cabinet-switch)
 
 ;;;** window snooper
 (require 'window-snooper)
