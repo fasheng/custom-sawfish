@@ -664,7 +664,7 @@
 
 
 ;;;==================================================================
-;;;* Init and cleanup, startup programs
+;;;* Autostart and Cleanup
 ;;;==================================================================
 
 (define my-startup-programs
@@ -673,6 +673,7 @@
     ("compton" "--config" "/home/fsh/.compton.conf")
     ("xsetroot" "-cursor_name" "left_ptr")
     ("xscreensaver" "-no-splash")
+    ("xfce4-terminal")
     ("fcitx")
     ("cairo-clock")
     ("tint2")
