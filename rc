@@ -552,12 +552,19 @@
 
 ;; global keybind
 (bind-keys global-keymap
-           "F12" '(jump-or-exec "Xfce4-terminal" "xfce4-terminal"
+           "F12" '(jump-or-exec "URxvt" "urxvt"
                                 #:match-class t
                                 #:onfocused iconify-window)
-           "W-TAB" '(jump-or-exec "Xfce4-terminal" "xfce4-terminal"
+           "W-TAB" '(jump-or-exec "URxvt" "urxvt"
                                 #:match-class t
                                 #:onfocused iconify-window))
+;; (bind-keys global-keymap
+;;            "F12" '(jump-or-exec "Xfce4-terminal" "xfce4-terminal"
+;;                                 #:match-class t
+;;                                 #:onfocused iconify-window)
+;;            "W-TAB" '(jump-or-exec "Xfce4-terminal" "xfce4-terminal"
+;;                                   #:match-class t
+;;                                   #:onfocused iconify-window))
 ;; (bind-keys global-keymap
 ;;            "F12" '(jump-or-exec "Deepin-terminal" "deepin-terminal"
 ;;                                 #:match-class t
@@ -568,6 +575,21 @@
 
 ;; TODO
 ;; #:onfocused (fsh-toggle-window-visible (get-window-by-class my-terminal-wm-class))))
+
+;;;**** urxvt
+(add-window-matcher '((WM_CLASS . "^URxvt/urxvt$"))
+                    '(
+                      (place-mode . centered)
+                      (fixed-positon . t)
+                      (position . north)
+                      (frame-type . top-border)
+                      (never-delete . t)
+                      (cycle-skip . t)
+                      (window-list-skip . t)
+                      (task-list-skip . t)
+                      (animator . none)
+                      (sticky . t)
+                      ))
 
 ;;;**** deepin-terminal
 (add-window-matcher '((WM_CLASS . "^Deepin-terminal/deepin-terminal$"))
@@ -671,7 +693,7 @@
     ("compton" "--config" "/home/fsh/.compton.conf")
     ("xsetroot" "-cursor_name" "left_ptr")
     ("xscreensaver" "-no-splash")
-    ("xfce4-terminal")
+    ("urxvt")
     ("fcitx")
     ("cairo-clock")
     ("tint2")
