@@ -66,7 +66,7 @@
 ;;;** config defualt xterm, filemanager and browser
 (defvar-setq xterm-program "terminal")
 (defvar-setq browser-program "chromium")
-(defvar-setq filemanager-program "nautilus")
+(defvar-setq filemanager-program "nemo")
 
 ;;;** key press TODO
 (defvar-setq multi-click-delay 200)
@@ -220,16 +220,16 @@
   "S-m" `(jump-or-exec "deepin-media-player" "deepin-media-player" nil #:match-class t)
   "r"   `(jump-or-exec "Liferea" "liferea" nil #:match-class t)
   "i"   `(jump-or-exec "Eog" "eog" nil #:match-class t)
-  "S-i"   `(jump-or-exec "Gthumb" "gthumb" nil #:match-class t)
+  "S-i" `(jump-or-exec "Gthumb" "gthumb" nil #:match-class t)
   "p"   `(jump-or-exec "Evince" "evince" nil #:match-class t)
   "S-p" `(jump-or-exec never-match-text "evince" nil #:match-class t)
-
   "t"   `(jump-or-exec "URxvt" "urxvt" #:match-class t)
   "S-t" `(jump-or-exec never-match-text "urxvt" nil #:match-class t)
-  "f"   `(jump-or-exec "Thunar" "thunar" nil #:match-class t)
-  "S-f" `(jump-or-exec "Nautilus" "nautilus" nil #:match-class t)
-  "b"   '(jump-or-exec "Chromium" "chromium_with_shm" nil #:match-class t)
-  "S-b" '(jump-or-exec never-match-text "chromium" nil #:match-class t)
+  "f"   `(jump-or-exec "Nemo" "nemo" nil #:match-class t)
+  "S-f"   `(jump-or-exec never-match-text "nemo" nil #:match-class t)
+  ;; "S-f" `(jump-or-exec "Thunar" "thunar" nil #:match-class t)
+  "b"   `(jump-or-exec "Chromium" "chromium_with_shm" nil #:match-class t)
+  "S-b" `(jump-or-exec never-match-text "chromium" nil #:match-class t)
   )
 
 
