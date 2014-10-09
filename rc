@@ -133,7 +133,7 @@
 (defvar-setq wallpaper-setter "hsetroot")
 (defvar-setq wallpaper-setter-args "-center")
 ;; set wallpaper manually
-(system "hsetroot -full ~/.wallpapers/Ariya/contents/images/1280x800.png &")
+(system "hsetroot -cover ~/.wallpapers/Ariya/contents/images/1280x800.png &")
 
 ;;;** TODO transparency
 ;; (require 'native-focus-transparency)
